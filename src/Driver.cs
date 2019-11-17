@@ -1,12 +1,10 @@
-﻿using System;
-
-namespace src
+﻿namespace CHIP_8_Emulator
 {
-    public class Driver
+    public static class Driver
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World of C#!");
+            Chip8.Run();
         }
     }
 }
