@@ -4,7 +4,8 @@
     {
         public static void Main(string[] args)
         {
-            Chip8.Run();
+            Chip8 emulator = new Chip8();
+            emulator.Run();
         }
     }
 }
