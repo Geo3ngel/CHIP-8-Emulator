@@ -1,7 +1,7 @@
-﻿﻿using System;
- using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
- namespace src
+namespace src
 {
     public class Chip8
     {
@@ -34,6 +34,10 @@
         }
 
 
+        public static void Main(string[] args)
+        {
+            Console.WriteLine("Hello World of C#!");
+        }
 
 
     }

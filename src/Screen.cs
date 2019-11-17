@@ -1,6 +1,6 @@
-﻿﻿using System;
+﻿using System;
 
- namespace src
+namespace src
 {
     public class Screen
     {

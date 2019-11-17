@@ -1,4 +1,4 @@
-﻿﻿namespace src
+﻿namespace src
 {
     static public class Font
     {
