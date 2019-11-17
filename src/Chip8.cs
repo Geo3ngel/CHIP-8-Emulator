@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace src
+namespace CHIP_8_Emulator
 {
     public class Chip8
     {
@@ -31,6 +31,12 @@ namespace src
         {
         TODO: // Set up graphics here
             this.beep = beep;
+        }
+        
+        // This is the runner function for the class 
+        public static void Run() {
+            Console.WriteLine("Starting CHIP-8 Emulator...");
+            Console.WriteLine("Beep boop beep boop beep...");
         }
     }
 }
