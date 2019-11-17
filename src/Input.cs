@@ -1,4 +1,4 @@
-﻿namespace CHIP-8-Emulator
+﻿namespace src
 {
     public class Input
     {
