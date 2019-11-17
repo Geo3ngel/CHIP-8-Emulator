@@ -1,4 +1,4 @@
-﻿namespace CHIP-8-Emulator
+﻿namespace src
 {
     static public class Font
     {
