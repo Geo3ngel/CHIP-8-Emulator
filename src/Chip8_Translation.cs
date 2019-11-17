@@ -135,7 +135,7 @@ namespace chip8
                 // TODO: Add logic for sound timer (Maybe here? Not 100% sure where it goes yet.)
             }
 
-
+            // TODO: Add logic for drawing graphics here.
         }
 
         public void Process_OpCode()
