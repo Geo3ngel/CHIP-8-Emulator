@@ -130,16 +130,16 @@ namespace src
             switch (data.NN)
             {
                 case 0x07:
-                    set_x_to_delay(data);
+                    get_delay(data);
                     break;
                 case 0x0A:
-                    wait_for_key(data);
+                    get_key(data);
                     break;
                 case 0x15:
-                    set_delay(data);
+                    set_delay_timer(data);
                     break;
                 case 0x18:
-                    set_sound(data);
+                    set_sound_timer(data);
                     break;
                 case 0x1E:
                     add_x_to_address_register(data);
@@ -151,10 +151,10 @@ namespace src
                     binary_coded_demical(data);
                     break;
                 case 0x55:
-                    save_x(data);
+                    reg_dump(data);
                     break;
                 case 0x65:
-                    load_x(data);
+                    reg_load(data);
                     break;
 
                 default:
@@ -167,13 +167,14 @@ namespace src
          MISC OPERATIONS:
              */
 
-        private void set_x_to_delay(OpCodeData data)
+        // Sets register to current value of the delay timer
+        private void get_delay(OpCodeData data)
         {
             registers[data.X] = delay_timer;
         }
 
         // Will be called repeatedly by the game loop until the desired key is pressed to progress the program counter.
-        private void wait_for_key(OpCodeData data)
+        private void get_key(OpCodeData data)
         {
             if(pressed_keys.Count > 0)
             {
@@ -185,12 +186,12 @@ namespace src
             }
         }
 
-        private void set_delay(OpCodeData data)
+        private void set_delay_timer(OpCodeData data)
         {
             delay_timer = registers[data.X];
         }
 
-        private void set_sound(OpCodeData data)
+        private void set_sound_timer(OpCodeData data)
         {
             // TODO: Update this to reflect the proper beeping procedure.
             // beep((int)(registers[data.X] * (1000f / 60)));   #Alternative way of playing it for X seconds?
@@ -205,7 +206,7 @@ namespace src
         private  void set_address_register_for_char(OpCodeData data) { address_register = (ushort)(registers[data.X] * 5); }
 
         // Stores a binary decimal into ram
-        private void binary_coded_demical(OpCodeData data)
+        private void set_BCD(OpCodeData data)
         {
             ram[address_register] = (byte)((registers[data.X]/100)%10);
             ram[address_register+1] = (byte)((registers[data.X]/10)%10);
@@ -213,7 +214,7 @@ namespace src
         }
 
         // Saves all registers to the address register.
-        private void save_x(OpCodeData data)
+        private void reg_dump(OpCodeData data)
         {
             for(var i=0; i<= data.X; i++)
             {
@@ -222,7 +223,7 @@ namespace src
         }
 
         // Loads all registers from the address register.
-        private void load_x(OpCodeData data)
+        private void reg_load(OpCodeData data)
         {
             for(var i=0; i <= data.X; i++)
             {
