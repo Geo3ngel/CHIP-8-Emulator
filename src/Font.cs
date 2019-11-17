@@ -1,4 +1,4 @@
-﻿namespace src
+﻿namespace chip8
 {
     // This is a static referencing class for defining Fonts from the ROM.
     static public class Font

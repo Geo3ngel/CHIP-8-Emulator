@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace src
+namespace chip8
 {
     // Define the opcode as a struct
     struct OpCodeData
@@ -78,6 +78,38 @@ namespace src
 
         // TODO: Set up fonts?
 
+        // Stores the current rom's font style in memory
+        private void set_up_font()
+        {
+            var offset = 0x0;
+            load_font_char(5 * offset++, Font.D0);
+            load_font_char(5 * offset++, Font.D1);
+            load_font_char(5 * offset++, Font.D2);
+            load_font_char(5 * offset++, Font.D3);
+            load_font_char(5 * offset++, Font.D4);
+            load_font_char(5 * offset++, Font.D5);
+            load_font_char(5 * offset++, Font.D6);
+            load_font_char(5 * offset++, Font.D7);
+            load_font_char(5 * offset++, Font.D8);
+            load_font_char(5 * offset++, Font.D9);
+            load_font_char(5 * offset++, Font.DA);
+            load_font_char(5 * offset++, Font.DB);
+            load_font_char(5 * offset++, Font.DC);
+            load_font_char(5 * offset++, Font.DD);
+            load_font_char(5 * offset++, Font.DE);
+            load_font_char(5 * offset++, Font.DF);
+        }
+
+        // Loads a single font char into memory.
+        private void load_font_char(int address, long font_data)
+        {
+            ram[address + 0] = (byte)((font_data & 0xF000000000) >> (8 * 4));
+            ram[address + 1] = (byte)((font_data & 0x00F0000000) >> (8 * 3));
+            ram[address + 2] = (byte)((font_data & 0x0000F00000) >> (8 * 2));
+            ram[address + 3] = (byte)((font_data & 0x000000F000) >> (8 * 1));
+            ram[address + 4] = (byte)((font_data & 0x00000000F0) >> (8 * 0));
+        }
+
         // TODO: Step through current process
         // NOTE: Will need to be slowed down, if it runs at the normal processor speed, we will have issues.
 
@@ -148,7 +180,7 @@ namespace src
                     set_address_register_for_char(data);
                     break;
                 case 0x33:
-                    binary_coded_demical(data);
+                    set_BCD(data);
                     break;
                 case 0x55:
                     reg_dump(data);
