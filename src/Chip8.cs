@@ -33,7 +33,9 @@ namespace Chip8_GUI.src
             // CHIP-8 Components
             _registers = new byte[16];
             _programCounter = 0x200;
+            _addressRegister = 0x200;
             _stack = new ushort[16];
+            _stackPointer = 0;
             _ram = new byte[0x1000];
 
             _screen = screen;
@@ -120,6 +122,8 @@ namespace Chip8_GUI.src
         }
 
         // TODO: Move this out to main game loop?
+
+        // Advances the timers
         public void Tick()
         {
             if (_delayTimer > 0)
@@ -132,9 +136,10 @@ namespace Chip8_GUI.src
         
         public void Process_OpCode()
         {
-            // Read Opcode in and split it up to class format
+            // Fetches OpCode
             var opCode = (ushort)(_ram[_programCounter++] << 8 | _ram[_programCounter++]);
 
+            // Decodes the OpCode
             var code = new OpCode(
                 opCode,
                 (byte)(opCode & 0x000F),
@@ -144,6 +149,7 @@ namespace Chip8_GUI.src
                 (byte)((opCode & 0x00F0) >> 4)
             );
 
+            // Excecutes the OpCode
             _opCodes[(byte)(opCode >> 12)](code);
         }
 
@@ -464,6 +470,11 @@ namespace Chip8_GUI.src
         public byte[] get_ram()
         {
             return _ram;
+        }
+
+        public byte[] get_registers()
+        {
+            return _registers;
         }
     }
 }

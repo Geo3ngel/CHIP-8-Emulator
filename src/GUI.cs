@@ -38,6 +38,8 @@ namespace Chip8_GUI.src
 
             KeyDown += SetKeyDown;
             KeyUp += SetKeyUp;
+
+            initMemoryDisplay();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -151,14 +153,45 @@ namespace Chip8_GUI.src
 
         }
 
+        // Sets up the Memory Display with the proper amount of items.
+        private void initMemoryDisplay()
+        {
+            // Sets up the ram list box.
+            for(int i = 0; i < chip8.get_ram().Length; i++)
+                RamView.Items.Add("0x0");
+
+            // Sets up view for registers.
+            for (int i = 0; i < chip8.get_registers().Length; i++)
+                RegistersView.Items.Add("0x0");
+        }
+
         // Writes memory from current Chip8 instance to a visualized display.
         // TODO: Change to be an ON SIGNALED EVENT???
         private void displayMemory()
         {
+            byte[] ram = chip8.get_ram();
+            byte[] registers = chip8.get_registers();
+
             // Updates Ram Display
             Invoke(new Action(() => {
-                byte[] ram = chip8.get_ram();
-                MemoryView.Text = BitConverter.ToString(ram);
+                for(int i = 0; i < ram.Length; i++)
+                {
+                    if (!Equals(RamView.Items[i], ram[i].ToString("x")))
+                    {
+                        RamView.Items[i] = ram[i].ToString("x");
+                    }
+                }
+            }));
+
+            // Updates Register display
+            Invoke(new Action(() => {
+                for (int i = 0; i < registers.Length; i++)
+                {
+                    if (Equals(RegistersView.Items[i], ram[i].ToString("x")))
+                    {
+                        RegistersView.Items[i] = ram[i].ToString("x");
+                    }
+                }
             }));
 
             // Updates Registers Display
@@ -168,5 +201,6 @@ namespace Chip8_GUI.src
             // etc...
 
         }
+
     }
 }
