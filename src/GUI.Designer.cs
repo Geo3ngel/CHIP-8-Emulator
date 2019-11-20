@@ -1,4 +1,6 @@
-﻿namespace Chip8_GUI.src
+﻿using System.Drawing;
+
+namespace Chip8_GUI.src
 {
     partial class GUI
     {
@@ -30,6 +32,8 @@
         {
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.display_screen = new System.Windows.Forms.PictureBox();
+            this.RamView = new System.Windows.Forms.ListBox();
+            this.RegistersView = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.display_screen)).BeginInit();
             this.SuspendLayout();
             // 
@@ -52,12 +56,36 @@
             this.display_screen.TabIndex = 0;
             this.display_screen.TabStop = false;
             // 
+            // RamView
+            // 
+            this.RamView.BackColor = System.Drawing.Color.Black;
+            this.RamView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.RamView.ForeColor = System.Drawing.Color.White;
+            this.RamView.FormattingEnabled = true;
+            this.RamView.Location = new System.Drawing.Point(743, 68);
+            this.RamView.Name = "RamView";
+            this.RamView.Size = new System.Drawing.Size(202, 314);
+            this.RamView.TabIndex = 4;
+            // 
+            // RegistersView
+            // 
+            this.RegistersView.BackColor = System.Drawing.Color.Black;
+            this.RegistersView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.RegistersView.ForeColor = System.Drawing.Color.White;
+            this.RegistersView.FormattingEnabled = true;
+            this.RegistersView.Location = new System.Drawing.Point(877, 388);
+            this.RegistersView.Name = "RegistersView";
+            this.RegistersView.Size = new System.Drawing.Size(68, 132);
+            this.RegistersView.TabIndex = 5;
+            // 
             // GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(957, 547);
+            this.Controls.Add(this.RegistersView);
+            this.Controls.Add(this.RamView);
             this.Controls.Add(this.display_screen);
             this.Controls.Add(this.comboBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -73,5 +101,7 @@
 
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.PictureBox display_screen;
+        private System.Windows.Forms.ListBox RamView;
+        private System.Windows.Forms.ListBox RegistersView;
     }
 }
