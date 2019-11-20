@@ -123,9 +123,6 @@ namespace CHIP_8_Emulator
             _opCodes[(byte)(opCode >> 12)](code);
         }
 
-        // TODO: Set up oppcode functions equivalents in C#.
-        // NOTE: This is a relatively large, but simple task. We're just defining the opcodes as C# instructions.
-
         // Activate Miscilanious Opcode
         private void run_misc_op(OpCode data)
         {
