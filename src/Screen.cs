@@ -1,4 +1,6 @@
-﻿namespace src
+﻿using System;
+
+namespace CHIP_8_Emulator
 {
     public class Screen
     {
