@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 
-namespace CHIP_8_Emulator
+namespace Chip8_GUI.src
 {
     public class Game_Loop
     {

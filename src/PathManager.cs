@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace CHIP_8_Emulator
+namespace Chip8_GUI.src
 {
     public class PathManager
     {

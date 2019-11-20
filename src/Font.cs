@@ -1,4 +1,4 @@
-namespace CHIP_8_Emulator
+namespace Chip8_GUI.src
 {
     // This is a static referencing class for defining Fonts from the ROM.
     static public class Font
