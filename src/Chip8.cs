@@ -279,47 +279,108 @@ namespace CHIP_8_Emulator
 
         // Jumps to the localtion specified in the current OpCode's nnn byte.
         private void jump_to_NNN(OpCode data){
-            
+            _programCounter = data.NNN;
         }
 
+        // Jumps to the subroutine
         private void call_subroutine_NNN(OpCode data){
-            
+            // Push the current Program counter onto the stack
+            _stack[_stackPointer++] = _programCounter;
+            // Changes program counter to target the subroutine.
+            _programCounter = data.NNN;
         }
 
         private void skip_if_X_equals_NN(OpCode data){
-            
+            if(_registers[data.X] == _registers[data.NN])
+            {
+                skip_instruction();
+            }
         }
 
         private void skip_if_X_not_equal_NN(OpCode data){
-            
+            if(_registers[data.X] != data.NN)
+            {
+                skip_instruction();
+            }
         }
 
         private void skip_if_X_equals_Y(OpCode data){
-            
+            if (_registers[data.X] == _registers[data.Y])
+            {   
+                skip_instruction();
+            }
         }
 
         private void set_X(OpCode data){
-            
+            _registers[data.X] = data.NN;
         }
 
         private void add_X(OpCode data){
-            
+            try
+            {
+                _registers[data.X] += data.NN;
+            }
+            catch(OverflowException)
+            {
+                Console.WriteLine("OVERFLOW EXCEPTION: {0} > Size of Register space allocated.", data.X);
+            }
         }
 
         private void math_operation(OpCode data){
-            
+            // Use the opcode's N byte to determine which mathematic operation to perform with X & Y.
+            switch (data.N)
+            {
+                case 0x0:   //Assign: Set X to Y
+                    this._registers[data.X] = this._registers[data.Y];
+                    break;
+                case 0x1:   // BitOp: Set X = X | Y (bitwise OR)
+                    this._registers[data.X] |= this._registers[data.Y];
+                    break;
+                case 0x2:   // BitOp: Sets X = X & Y (bitwise AND)
+                    this._registers[data.X] &= this._registers[data.Y];
+                    break;
+                case 0x3:   // BitOP: Sets X = X xor Y
+                    _registers[data.X] ^= _registers[data.Y];
+                    break;
+                case 0x4:   // Math: Sets X += Y
+                    _registers[0xF] = (byte)(_registers[data.X] + _registers[data.Y] > 0xFF ? 1 : 0);
+                    _registers[data.X] += _registers[data.Y];
+                    break;
+                case 0x5:   // Math: X -= Y
+                    _registers[0xF] = (byte)(_registers[data.X] > _registers[data.Y] ? 1 : 0);
+                    _registers[data.X] -= _registers[data.Y];
+                    break;
+                case 0x6:   // BitOp: Stores the least significant bit of the value of register position X at position 0xF in ram, then shifts value of register @ position X to the right by 1. 
+                    _registers[0xF] = (byte)((_registers[data.X] & 0x1) != 0 ? 1 : 0);
+                    _registers[data.X] /= 2; // Bit shift right.
+                    break;
+                case 0x7:   //Math: X = Y - X
+                    _registers[0xF] = (byte)(_registers[data.Y] > _registers[data.X] ? 1 : 0);
+                    _registers[data.Y] -= _registers[data.X];
+                    break;
+                case 0xE:   // BitOp: Stores the least significant bit of the value of register position X at position 0xF in ram, then shifts value of register @ position X to the left by 1. 
+                    _registers[0xF] = (byte)((_registers[data.X] & 0xF) != 0 ? 1 : 0);
+                    _registers[data.X] *= 2; // Bit shift left.
+                    break;
+                default:
+                    Console.WriteLine("ERROR: No valid Math Operation for case: {0}", data.N);
+            }
         }
 
         private void skip_if_X_not_equals_Y(OpCode data){
-            
+            if (_registers[data.X] != _registers[data.Y])
+            {
+                skip_instruction();
+            }
         }
 
         private void set_adress_counter(OpCode data){
             
         }
 
+        // Just to the value in the register offset by NNN value 
         private void jump_offset_by_NNN(OpCode data){
-            
+            _programCounter = (ushort)(_registers[0] + data.NNN);
         }
 
         private void set_X_rand(OpCode data){
@@ -332,6 +393,11 @@ namespace CHIP_8_Emulator
 
         private void skip_on_key(OpCode data){
             
+        }
+
+        private void skip_instruction()
+        {
+            _programCounter += 2;
         }
     }
 }
