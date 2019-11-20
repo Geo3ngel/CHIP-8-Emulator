@@ -17,8 +17,7 @@ namespace CHIP_8_Emulator
             games_path = init_game_path();
             Console.WriteLine("Games dir: {0}", Path.GetFullPath(games_path));
 
-            get_games()
-            //Path.Combine(Outputter_dir, filename);
+            get_games();
 
             while (true)
             {
