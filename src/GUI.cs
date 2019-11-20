@@ -128,13 +128,14 @@ namespace Chip8_GUI.src
                     lastTime += targetElapsedTime60Hz;
                 }
 
-                this.Invoke((Action)load_next_OpCode);
-
+                chip8.Process_OpCode();
+                displayMemory();
                 Thread.Sleep(targetElapsedTime);
             }
         }
 
-        void load_next_OpCode() => chip8.Process_OpCode();
+        //void load_next_OpCode() => chip8.Process_OpCode();
+        
         void rom_tick()
         {
             // Count for game timers
@@ -147,6 +148,24 @@ namespace Chip8_GUI.src
 
         private void GUI_Load(object sender, EventArgs e)
         {
+
+        }
+
+        // Writes memory from current Chip8 instance to a visualized display.
+        // TODO: Change to be an ON SIGNALED EVENT???
+        private void displayMemory()
+        {
+            // Updates Ram Display
+            Invoke(new Action(() => {
+                byte[] ram = chip8.get_ram();
+                MemoryView.Text = BitConverter.ToString(ram);
+            }));
+
+            // Updates Registers Display
+
+            // Updates Program Counter Display
+
+            // etc...
 
         }
     }

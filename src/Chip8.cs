@@ -456,5 +456,14 @@ namespace Chip8_GUI.src
         {
             _programCounter += 2;
         }
+
+        /*
+         Getters for Visualization
+         */
+
+        public byte[] get_ram()
+        {
+            return _ram;
+        }
     }
 }

@@ -30,6 +30,7 @@
         {
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.display_screen = new System.Windows.Forms.PictureBox();
+            this.MemoryView = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.display_screen)).BeginInit();
             this.SuspendLayout();
             // 
@@ -52,12 +53,21 @@
             this.display_screen.TabIndex = 0;
             this.display_screen.TabStop = false;
             // 
+            // MemoryView
+            // 
+            this.MemoryView.Location = new System.Drawing.Point(763, 68);
+            this.MemoryView.Multiline = true;
+            this.MemoryView.Name = "MemoryView";
+            this.MemoryView.Size = new System.Drawing.Size(172, 320);
+            this.MemoryView.TabIndex = 2;
+            // 
             // GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(957, 547);
+            this.Controls.Add(this.MemoryView);
             this.Controls.Add(this.display_screen);
             this.Controls.Add(this.comboBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -66,6 +76,7 @@
             this.Load += new System.EventHandler(this.GUI_Load);
             ((System.ComponentModel.ISupportInitialize)(this.display_screen)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -73,5 +84,6 @@
 
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.PictureBox display_screen;
+        private System.Windows.Forms.TextBox MemoryView;
     }
 }
