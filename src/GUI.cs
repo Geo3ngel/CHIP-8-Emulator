@@ -163,6 +163,20 @@ namespace Chip8_GUI.src
             // Sets up view for registers.
             for (int i = 0; i < chip8.get_registers().Length; i++)
                 RegistersView.Items.Add("0x0");
+
+            // Initialize program counter
+            ProgramCounterView.Items.Add("0");
+
+            // Initialize address counter
+            AddressCounterView.Items.Add("0");
+
+            // Initialize Stack
+            for (int i = 0; i < chip8.get_stack().Length; i++)
+                StackView.Items.Add("0x0");
+
+            // Initialize Stack Pointer
+            StackPointerView.Items.Add("0");
+
         }
 
         // Writes memory from current Chip8 instance to a visualized display.
@@ -171,6 +185,10 @@ namespace Chip8_GUI.src
         {
             byte[] ram = chip8.get_ram();
             byte[] registers = chip8.get_registers();
+            ushort program_counter = chip8.get_pc();
+            ushort address_counter = chip8.get_address_counter();
+            byte stack_pointer = chip8.get_stack_pointer();
+            ushort[] stack = chip8.get_stack();
 
             // Updates Ram Display
             Invoke(new Action(() => {
@@ -187,20 +205,55 @@ namespace Chip8_GUI.src
             Invoke(new Action(() => {
                 for (int i = 0; i < registers.Length; i++)
                 {
-                    if (Equals(RegistersView.Items[i], ram[i].ToString("x")))
+                    if (!Equals(RegistersView.Items[i], registers[i].ToString("x")))
                     {
-                        RegistersView.Items[i] = ram[i].ToString("x");
+                        RegistersView.Items[i] = registers[i].ToString("x");
                     }
                 }
             }));
 
-            // Updates Registers Display
 
             // Updates Program Counter Display
+            // ProgramCounterView
+            Invoke(new Action(() => {
+                if (!Equals(ProgramCounterView.Items[0], program_counter.ToString()))
+                {
+                    ProgramCounterView.Items[0] = program_counter.ToString();
+                }
+            }));
 
-            // etc...
+            // Updates Address Counter Display
+            Invoke(new Action(() => {
+                if (!Equals(AddressCounterView.Items[0], address_counter.ToString()))
+                {
+                    AddressCounterView.Items[0] = address_counter.ToString();
+                }
+            }));
+
+            // Update Stack Pointer Display
+            // TODO: Just make it highlight the currently selected index of the stack?
+            Invoke(new Action(() => {
+                for (int i = 0; i < registers.Length; i++)
+                {
+                    if (!Equals(StackPointerView.Items[0], stack_pointer.ToString("x")))
+                    {
+                        StackPointerView.Items[0] = stack_pointer.ToString("x");
+                    }
+                }
+            }));
+
+            //Update Stack
+            Invoke(new Action(() => {
+                for (int i = 0; i < stack.Length; i++)
+                {
+                    if (!Equals(StackView.Items[i], stack[i].ToString()))
+                    {
+                        StackView.Items[i] = stack[i].ToString();
+                    }
+                }
+            }));
+
 
         }
-
     }
 }
