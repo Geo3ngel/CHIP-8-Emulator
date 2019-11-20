@@ -28,7 +28,7 @@ namespace CHIP_8_Emulator
         private Screen _screen;
 
         // Constructor for the Chip class
-        public Chip8(/*Action<bool[,]> pixels, Action<int> beep*/)
+        public Chip8(Screen screen/*, Action<int> beep*/)
         {
             // CHIP-8 Components
             _registers = new byte[16];
@@ -37,7 +37,7 @@ namespace CHIP_8_Emulator
             _ram = new byte[0x1000];
 
             // TODO: Consider passing in Screen object reference.
-            _screen = new Screen();
+            _screen = screen;
             // Timers
             //this._beep = beep;
 
@@ -95,6 +95,7 @@ namespace CHIP_8_Emulator
             _pressedKeys.Remove(key);
         }
 
+        // TODO: Move this out to main game loop?
         public void Tick()
         {
             if (_delayTimer > 0)
@@ -112,11 +113,11 @@ namespace CHIP_8_Emulator
 
             var code = new OpCode(
                 opCode,
-                (ushort)((opCode & 0x0F00) >> 8),
-                (ushort)((opCode & 0x00F0) >> 4),
-                (ushort)((opCode & 0x000F)),
-                (ushort)((opCode & 0x00FF)),
-                (ushort)((opCode & 0x0FFF))
+                (byte)(opCode & 0x000F),
+                (byte)(opCode & 0x00FF),
+                 (byte)(opCode & 0x0FFF),
+                (byte)((opCode & 0x0F00) >> 8),
+                (byte)((opCode & 0x00F0) >> 4)
             );
 
             _opCodes[(byte)(opCode >> 12)](code);
@@ -363,6 +364,7 @@ namespace CHIP_8_Emulator
                     break;
                 default:
                     Console.WriteLine("ERROR: No valid Math Operation for case: {0}", data.N);
+                    break;
             }
         }
 
@@ -431,13 +433,13 @@ namespace CHIP_8_Emulator
 
         // Skips the next instruction if a certain key is pressed.
         private void skip_on_key(OpCode data){
-            if ((if_key_pressed() && _pressedKeys.Contains(_registers[data.X])) || (!if_key_pressed() && !_pressedKeys.Contains(_ram[data.X])))
+            if ((if_key_pressed(data) && _pressedKeys.Contains(_registers[data.X])) || (!if_key_pressed(data) && !_pressedKeys.Contains(_ram[data.X])))
             {
                 skip_instruction();
             }
         }
 
-        private bool if_key_pressed()
+        private bool if_key_pressed(OpCode data)
         {
             bool key_pressed;
             if (data.NN == 0x9E)
