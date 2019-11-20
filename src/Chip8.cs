@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using chip8;
 
 namespace CHIP_8_Emulator
 {
@@ -31,17 +30,14 @@ namespace CHIP_8_Emulator
             _ram = new byte[0x1000];
             // Timers
             //this._beep = beep;
+
             // opCodes
             _pressedKeys = new HashSet<byte>();
             _random = new Random();
         }
-        
-        // TODO: Load the ROM in here
         public void load_ROM(byte[] data) =>
             // Loads the data from the rom into memory @ the program counter.
-            Array.Copy(data, 0, _ram, 0x200, data.Length); // TODO: Swap out 0x200 with a constant representing it, since it is the program counter?
-
-        // TODO: Set up fonts?
+            Array.Copy(data, 0, _ram, 0x200, data.Length);
 
         // Stores the current rom's font style in memory
         private void set_up_font()
@@ -96,6 +92,7 @@ namespace CHIP_8_Emulator
                 _delayTimer--;
                 // TODO: Add logic for sound timer (Maybe here? Not 100% sure where it goes yet.)
             }
+            // TODO: Add logic for drawing graphics here.
         }
         
         public void Process_OpCode()
@@ -224,7 +221,7 @@ namespace CHIP_8_Emulator
             }
         }
         
-        // Initialize Chip8.cs object
+        // Processes each opcode from rom
         public void Run()
         {
             Console.WriteLine("Starting CHIP-8 Emulator");
