@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace chip8
 {
@@ -29,7 +31,8 @@ namespace chip8
 
         Action<int> beep;
 
-        ushort stack_pointer = new ushort[16];
+        byte stack_pointer;
+        ushort[] stack = new ushort[16];
 
         byte[] ram = new byte[0x1000];
 
@@ -41,7 +44,7 @@ namespace chip8
         Random random = new Random();
 
         // Initializes Chip8 Object
-        public Chip_8(Action<bool[,]> pixels, Action<int> beep)
+        public Chip8(Action<bool[,]> pixels, Action<int> beep)
         {
             // TODO:  Set up graphics here
             this.beep = beep;
@@ -132,7 +135,7 @@ namespace chip8
                 // TODO: Add logic for sound timer (Maybe here? Not 100% sure where it goes yet.)
             }
 
-
+            // TODO: Add logic for drawing graphics here.
         }
 
         public void Process_OpCode()
@@ -143,11 +146,11 @@ namespace chip8
             var op_struct = new OpCodeData()
             {
                 OpCode = opCode,
-                X = (ushort)((opCode & 0x0F00) >> 8),
-                Y = (ushort)((opCode & 0x00F0) >> 4),
-                N = (ushort)opCode & 0x000F,
-                NN = (ushort)opCode & 0x00FF,
-                NNN = (ushort)opCode & 0x0FFF,
+                X = (byte)(((opCode & 0x0F00) >> 8)),
+                Y = (byte)(((opCode & 0x00F0) >> 4)),
+                N = (byte)(opCode & 0x000F),
+                NN = (byte)(opCode & 0x00FF),
+                NNN = (ushort)(opCode & 0x0FFF),
             };
 
             opCodes[(byte)(opCode >> 12)](op_struct);
@@ -190,7 +193,7 @@ namespace chip8
                     break;
 
                 default:
-                    Console.log("ERROR: NO MISC OP_CODE FOR:" + data);
+                    Console.WriteLine("ERROR: NO MISC OP_CODE FOR:" + data);
                     break;
             }
         }

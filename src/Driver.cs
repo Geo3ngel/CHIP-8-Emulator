@@ -1,8 +1,12 @@
-﻿namespace src
+﻿using System;
+
+namespace chip8
 {
     public class Driver
     {
-        // TODO: Add method of loading in ROMs? (Pathing Manager?)
-        
+        public static void Main(string[] args)
+        {
+            Console.WriteLine("Chip8 M8");
+        }
     }
 }
