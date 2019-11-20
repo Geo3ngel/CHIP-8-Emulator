@@ -14,6 +14,7 @@ namespace Chip8_GUI.src
     {
         Chip8 chip8;
         Bitmap display;
+        Screen screen;
 
         // TODO: Add in pathing manager component here
         string rom = "C:\\Users\\GeoEn\\Desktop\\Coding\\CHIP-8-Emulator\\games\\Nim.ch8";
@@ -30,7 +31,7 @@ namespace Chip8_GUI.src
             display = new Bitmap(64, 32);
             display_screen.Image = display;
 
-            Screen screen = new Screen();
+            screen = new Screen();
             chip8 = new Chip8(screen);
 
             chip8.load_ROM(File.ReadAllBytes(rom));
@@ -56,10 +57,12 @@ namespace Chip8_GUI.src
                 {
                     for (var x = 0; x < display.Width; x++)
                     {
-                        pointer[0] = 0; // Blue
-                        pointer[1] = pixels[x, y] ? (byte)0x64 : (byte)0; // Green
-                        pointer[2] = 0; // Red
-                        pointer[3] = 255; // Alpha
+
+                        // TODO: Add color wheel for configuring color scheme?
+                        pointer[0] = 0;                                     // Blue
+                        pointer[1] = pixels[x, y] ? (byte)0x64 : (byte)0;   // Green
+                        pointer[2] = 0;                                     // Red
+                        pointer[3] = 255;                                   // Alpha Channel
 
                         pointer += 4; // 4 bytes per pixel
                     }
@@ -134,7 +137,11 @@ namespace Chip8_GUI.src
         void load_next_OpCode() => chip8.Process_OpCode();
         void rom_tick()
         {
+            // Count for game timers
             chip8.Tick();
+
+            // Update Graphics here based on "Screen"
+            WriteToDisplay(screen.getDisplay());
             display_screen.Refresh();
         }
 

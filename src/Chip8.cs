@@ -40,7 +40,6 @@ namespace Chip8_GUI.src
             // Timers
             //this._beep = beep;
 
-            // opCodes
             _pressedKeys = new HashSet<byte>();
             _random = new Random();
 
