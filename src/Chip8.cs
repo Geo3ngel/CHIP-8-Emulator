@@ -23,10 +23,9 @@ namespace CHIP_8_Emulator
         private Dictionary<byte, Action<OpCode>> _opCodes;
         private readonly HashSet<byte> _pressedKeys;
         private Random _random;
-        private bool[,] _pixels;
 
-        // Constants
-        private int _screenWidth = 64, _screenHeight = 32;
+        
+        private Screen _screen;
 
         // Constructor for the Chip class
         public Chip8(/*Action<bool[,]> pixels, Action<int> beep*/)
@@ -36,8 +35,9 @@ namespace CHIP_8_Emulator
             _programCounter = 0x200;
             _stack = new ushort[16];
             _ram = new byte[0x1000];
-            _pixels = new bool[_screenWidth, _screenHeight];
 
+            // TODO: Consider passing in Screen object reference.
+            _screen = new Screen();
             // Timers
             //this._beep = beep;
 
@@ -267,7 +267,7 @@ namespace CHIP_8_Emulator
                 for(var x_axis = 0; x_axis < _screenWidth; x_axis++){
                     for(int y_axis = 0; y_axis < _screenHeight; y_axis++){
                         // "Cleared" screen refers to an array of all false values.
-                        _pixels[x_axis, y_axis] = false;
+                        _screen.updatePixel(x_axis, y_axis, false);
                     }
                 }
             }
