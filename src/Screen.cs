@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CHIP_8_Emulator
+namespace Chip8_GUI.src
 {
     public class Screen
     {
@@ -75,6 +75,11 @@ namespace CHIP_8_Emulator
         public void setUpdateNeeded()
         {
             update = true;
+        }
+
+        public bool[,] getDisplay()
+        {
+            return _pixels;
         }
     }
 }

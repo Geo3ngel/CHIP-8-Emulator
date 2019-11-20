@@ -1,4 +1,7 @@
-﻿namespace CHIP_8_Emulator
+﻿using System.Windows.Forms;
+using Chip8_GUI.src;
+
+namespace Chip8_GUI.src
 {
     public static class Driver
     {
@@ -8,6 +11,10 @@
             ///Screen screen = new Screen();
             //Chip8 emulator = new Chip8(screen);
             //emulator.Run();
+
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new GUI());
         }
     }
 }

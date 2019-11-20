@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace CHIP_8_Emulator
+namespace Chip8_GUI.src
 {
     public class PathManager
     {
@@ -18,11 +18,6 @@ namespace CHIP_8_Emulator
             Console.WriteLine("Games dir: {0}", Path.GetFullPath(games_path));
 
             get_games();
-
-            while (true)
-            {
-
-            }
         }
 
         private string init_game_path()
