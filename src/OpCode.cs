@@ -4,9 +4,9 @@
     {
         public ushort opCode;
         public ushort NNN;
-        public ushort NN, X, Y, N;
+        public byte NN, X, Y, N;
         
-        public OpCode(ushort opCode, ushort X,ushort N, ushort NN, ushort NNN, ushort Y)
+        public OpCode(ushort opCode, byte N, byte NN, ushort NNN, byte X, byte Y)
         {
             this.opCode = opCode;
             this.X = X;

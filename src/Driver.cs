@@ -4,8 +4,10 @@
     {
         public static void Main(string[] args)
         {
-            Chip8 emulator = new Chip8();
-            emulator.Run();
+            PathManager pm = new PathManager();
+            ///Screen screen = new Screen();
+            //Chip8 emulator = new Chip8(screen);
+            //emulator.Run();
         }
     }
 }

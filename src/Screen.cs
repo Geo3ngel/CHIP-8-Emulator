@@ -11,14 +11,14 @@ namespace CHIP_8_Emulator
         private bool[,] _pixels;
         
         // Used to help prevent flickering by delaying clearing pixels by a single frame.
-        private bool[,] _pixelBuffer;
+        private bool[,] _toClearBuffer;
 
         private bool update;
 
         public Screen()
         {
             _pixels = new bool[_screenWidth, _screenHeight];
-            _clearBuffer = new bool[_screenWidth, _screenHeight];
+            _toClearBuffer = new bool[_screenWidth, _screenHeight];
             update = true;
         }
 
@@ -34,7 +34,7 @@ namespace CHIP_8_Emulator
                 for (int y_axis = 0; y_axis < _screenHeight; y_axis++)
                 {
                     // "Cleared" screen refers to an array of all false values.
-                    pixels[x_axis, y_axis] = false;
+                    _pixels[x_axis, y_axis] = false;
                 }
             }
         }
@@ -46,28 +46,28 @@ namespace CHIP_8_Emulator
             {
                 for (int y_axis = 0; y_axis < _screenHeight; y_axis++)
                 {
-                    if (_clearBuffer[x_axis, y_axis])
+                    if (_toClearBuffer[x_axis, y_axis])
                     {
                         update = true;
                     }
 
-                    _clearBuffer[x_axis, y_axis] = false;
+                    _toClearBuffer[x_axis, y_axis] = false;
                     _pixels[x_axis, y_axis] = false;
                 }
             }
         }
 
-        public void setPixel(int x, int y)
+        public void setPixel(int x_axis, int y_axis)
         {
             _pixels[x_axis, y_axis] = true;
         }
 
-        public void setPendingClear(int x, int y)
+        public void setPendingClear(int x_axis, int y_axis)
         {
-            _pixelBuffer[x_axis, y_axis] = true;
+            _toClearBuffer[x_axis, y_axis] = true;
         }
 
-        public bool getPixel(int x, int y)
+        public bool getPixel(int x_axis, int y_axis)
         {
             return _pixels[x_axis, y_axis];
         }
