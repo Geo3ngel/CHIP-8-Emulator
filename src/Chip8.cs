@@ -252,7 +252,7 @@ namespace CHIP_8_Emulator
                {0x7, add_X},
                {0x8, math_operation},
                {0x9, skip_if_X_not_equals_Y},
-               {0xA, set_adress_counter},
+               {0xA, set_adress_register},
                {0xB, jump_offset_by_NNN},
                {0xC, set_X_rand},
                {0xD, draw_sprite},
@@ -264,12 +264,7 @@ namespace CHIP_8_Emulator
         private void clear_or_return(OpCode data){
             // Clears screen
             if (data.NN == 0xE0){
-                for(var x_axis = 0; x_axis < _screenWidth; x_axis++){
-                    for(int y_axis = 0; y_axis < _screenHeight; y_axis++){
-                        // "Cleared" screen refers to an array of all false values.
-                        _screen.updatePixel(x_axis, y_axis, false);
-                    }
-                }
+                _screen.clear();
             }
             // Returns subroutine from the stack
             else if(data.NN == 0xEE){
@@ -374,8 +369,8 @@ namespace CHIP_8_Emulator
             }
         }
 
-        private void set_adress_counter(OpCode data){
-            
+        private void set_adress_register(OpCode data){
+            _addressRegister = data.NNN;
         }
 
         // Just to the value in the register offset by NNN value 
@@ -383,12 +378,51 @@ namespace CHIP_8_Emulator
             _programCounter = (ushort)(_registers[0] + data.NNN);
         }
 
+        // &s a random integer between 0 and 256with NN
         private void set_X_rand(OpCode data){
-            
+            _registers[data.X] = (byte)(_random.Next(0, 256) & data.NN);
         }
 
+        // Draws a specified sprite to the 'Screen' Object.
         private void draw_sprite(OpCode data){
-            
+            var spriteX = V[data.X];
+            var spriteY = V[data.Y];
+
+            // Write any pending clears
+            _screen.writePendingClears();
+
+            // Clears the significant bit storage register.
+            _registers[0xF] = 0;
+
+            for (int i = 0; i < data.N; i++)
+            {
+                // Selects line of the sprite to render
+                var spriteLine = _ram[_addressRegister + i];
+
+                for (var bit = 0; bit < 8; bit++)
+                {
+                    int x_axis = (spriteX + bit) % ScreenWidth;
+                    int y_axis = (spriteY + i) % ScreenHeight;
+
+                    var spriteBit = ((spriteLine >> (7 - bit)) & 1);
+                    var oldBit = _screen.getPixel(x_axis, y_axis) ? 1 : 0;
+
+                    if (oldBit != spriteBit)
+                        needsRedraw = true;
+
+                    // New bit is XOR of existing and new.
+                    var newBit = oldBit ^ spriteBit;
+
+                    if (newBit != 0)
+                        _screen.setPixel(x_axis, y_axis);
+                    else // Otherwise write a pending clear
+                        _screen.setPendingClear(x_axis, y_axis) = true;
+
+                    // If we wiped out a pixel, set flag for collission.
+                    if (oldBit != 0 && newBit == 0)
+                        _ram[0xF] = 1;
+                }
+            }
         }
 
         private void skip_on_key(OpCode data){
