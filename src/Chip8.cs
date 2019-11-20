@@ -24,7 +24,7 @@ namespace CHIP_8_Emulator
         private readonly HashSet<byte> _pressedKeys;
         private Random _random;
 
-        
+        const int _screenWidth = 64, _screenHeight = 32;
         private Screen _screen;
 
         // Constructor for the Chip class
@@ -385,8 +385,8 @@ namespace CHIP_8_Emulator
 
         // Draws a specified sprite to the 'Screen' Object.
         private void draw_sprite(OpCode data){
-            var spriteX = V[data.X];
-            var spriteY = V[data.Y];
+            var spriteX = _ram[data.X];
+            var spriteY = _ram[data.Y];
 
             // Write any pending clears
             _screen.writePendingClears();
@@ -401,14 +401,14 @@ namespace CHIP_8_Emulator
 
                 for (var bit = 0; bit < 8; bit++)
                 {
-                    int x_axis = (spriteX + bit) % ScreenWidth;
-                    int y_axis = (spriteY + i) % ScreenHeight;
+                    int x_axis = (spriteX + bit) % _screenWidth;
+                    int y_axis = (spriteY + i) % _screenHeight;
 
                     var spriteBit = ((spriteLine >> (7 - bit)) & 1);
                     var oldBit = _screen.getPixel(x_axis, y_axis) ? 1 : 0;
 
                     if (oldBit != spriteBit)
-                        needsRedraw = true;
+                        _screen.setUpdateNeeded();
 
                     // New bit is XOR of existing and new.
                     var newBit = oldBit ^ spriteBit;
@@ -416,7 +416,7 @@ namespace CHIP_8_Emulator
                     if (newBit != 0)
                         _screen.setPixel(x_axis, y_axis);
                     else // Otherwise write a pending clear
-                        _screen.setPendingClear(x_axis, y_axis) = true;
+                        _screen.setPendingClear(x_axis, y_axis);
 
                     // If we wiped out a pixel, set flag for collission.
                     if (oldBit != 0 && newBit == 0)

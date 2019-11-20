@@ -71,5 +71,10 @@ namespace CHIP_8_Emulator
         {
             return _pixels[x_axis, y_axis];
         }
+
+        public void setUpdateNeeded()
+        {
+            update = true;
+        }
     }
 }
