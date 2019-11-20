@@ -6,28 +6,38 @@ namespace CHIP_8_Emulator
 {
     public class Chip8
     {
-        // CHIP-8 Components
+        // CHIP-8 VM Components
         private ushort _addressRegister;
         private readonly byte[] _registers;
         private ushort _programCounter;
-        private ushort[] _stackPointer;
+        private byte _stackPointer;
+        private ushort[] _stack = new ushort[16];
         private readonly byte[] _ram;
+
         // Timers
         private byte _delayTimer;
         private byte _soundTimer;
         private Action<int> _beep;
+
         // opCodes
         private Dictionary<byte, Action<OpCode>> _opCodes;
         private readonly HashSet<byte> _pressedKeys;
         private Random _random;
+        private bool[,] _pixels;
+
+        // Constants
+        private int _screenWidth = 64, _screenHeight = 32;
+
         // Constructor for the Chip class
         public Chip8(/*Action<bool[,]> pixels, Action<int> beep*/)
         {
             // CHIP-8 Components
             _registers = new byte[16];
             _programCounter = 0x200;
-            _stackPointer = new ushort[16];
+            _stack = new ushort[16];
             _ram = new byte[0x1000];
+            _pixels = new bool[_screenWidth, _screenHeight];
+
             // Timers
             //this._beep = beep;
 
@@ -230,25 +240,98 @@ namespace CHIP_8_Emulator
             // TODO: Ensure the font is written out
 
             // Map Chip-8 opcodes to C# functions that are their equivalent
-//            _opCodes = new Dictionary<byte, Action<OpCode>>
-//            {
-//                {0x0, clear_or_return},
-//                {0x1, },
-//                {0x2, },
-//                {0x3, },
-//                {0x4, },
-//                {0x5, },
-//                {0x6, },
-//                {0x7, },
-//                {0x8, },
-//                {0x9, },
-//                {0xA, },
-//                {0xB, },
-//                {0xC, },
-//                {0xD, },
-//                {0xE, },
-//                {0xF, run_misc_op}
-//            };
+           _opCodes = new Dictionary<byte, Action<OpCode>>
+           {
+               {0x0, clear_or_return},
+               {0x1, jump_to_NNN},
+               {0x2, call_subroutine_NNN},
+               {0x3, skip_if_X_equals_NN},
+               {0x4, skip_if_X_not_equal_NN},
+               {0x5, skip_if_X_equals_Y},
+               {0x6, set_X},
+               {0x7, add_X},
+               {0x8, math_operation},
+               {0x9, skip_if_X_not_equals_Y},
+               {0xA, set_adress_counter},
+               {0xB, jump_offset_by_NNN},
+               {0xC, set_X_rand},
+               {0xD, draw_sprite},
+               {0xE, skip_on_key},
+               {0xF, run_misc_op}
+           };
+        }
+
+        private void clear_or_return(OpCode data){
+            // Clears screen
+            if (data.NN == 0xE0){
+                for(var x_axis = 0; x_axis < _screenWidth; x_axis++){
+                    for(int y_axis = 0; y_axis < _screenHeight; y_axis++){
+                        // "Cleared" screen refers to an array of all false values.
+                        _pixels[x_axis, y_axis] = false;
+                    }
+                }
+            }
+            // Returns subroutine from the stack
+            else if(data.NN == 0xEE){
+                _programCounter = _stack[--_stackPointer];
+            }
+        }
+
+        // Jumps to the localtion specified in the current OpCode's nnn byte.
+        private void jump_to_NNN(OpCode data){
+            
+        }
+
+        private void call_subroutine_NNN(OpCode data){
+            
+        }
+
+        private void skip_if_X_equals_NN(OpCode data){
+            
+        }
+
+        private void skip_if_X_not_equal_NN(OpCode data){
+            
+        }
+
+        private void skip_if_X_equals_Y(OpCode data){
+            
+        }
+
+        private void set_X(OpCode data){
+            
+        }
+
+        private void add_X(OpCode data){
+            
+        }
+
+        private void math_operation(OpCode data){
+            
+        }
+
+        private void skip_if_X_not_equals_Y(OpCode data){
+            
+        }
+
+        private void set_adress_counter(OpCode data){
+            
+        }
+
+        private void jump_offset_by_NNN(OpCode data){
+            
+        }
+
+        private void set_X_rand(OpCode data){
+            
+        }
+
+        private void draw_sprite(OpCode data){
+            
+        }
+
+        private void skip_on_key(OpCode data){
+            
         }
     }
 }
