@@ -1,12 +1,11 @@
-﻿using System;
-
-namespace chip8
+﻿namespace CHIP_8_Emulator
 {
-    public class Driver
+    public static class Driver
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Chip8 M8");
+            Chip8 emulator = new Chip8();
+            emulator.Run();
         }
     }
 }
