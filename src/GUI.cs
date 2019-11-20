@@ -205,7 +205,7 @@ namespace Chip8_GUI.src
             Invoke(new Action(() => {
                 for (int i = 0; i < registers.Length; i++)
                 {
-                    if (Equals(RegistersView.Items[i], registers[i].ToString("x")))
+                    if (!Equals(RegistersView.Items[i], registers[i].ToString("x")))
                     {
                         RegistersView.Items[i] = registers[i].ToString("x");
                     }
@@ -216,7 +216,7 @@ namespace Chip8_GUI.src
             // Updates Program Counter Display
             // ProgramCounterView
             Invoke(new Action(() => {
-                if (Equals(ProgramCounterView.Items[0], program_counter.ToString()))
+                if (!Equals(ProgramCounterView.Items[0], program_counter.ToString()))
                 {
                     ProgramCounterView.Items[0] = program_counter.ToString();
                 }
@@ -224,9 +224,9 @@ namespace Chip8_GUI.src
 
             // Updates Address Counter Display
             Invoke(new Action(() => {
-                if (Equals(AddressCounterView.Items[0], program_counter.ToString()))
+                if (!Equals(AddressCounterView.Items[0], address_counter.ToString()))
                 {
-                    AddressCounterView.Items[0] = program_counter.ToString();
+                    AddressCounterView.Items[0] = address_counter.ToString();
                 }
             }));
 
@@ -235,14 +235,23 @@ namespace Chip8_GUI.src
             Invoke(new Action(() => {
                 for (int i = 0; i < registers.Length; i++)
                 {
-                    if (Equals(ProgramCounterView.Items[0], program_counter.ToString()))
+                    if (!Equals(StackPointerView.Items[0], stack_pointer.ToString("x")))
                     {
-                        ProgramCounterView.Items[0] = program_counter.ToString();
+                        StackPointerView.Items[0] = stack_pointer.ToString("x");
                     }
                 }
             }));
 
             //Update Stack
+            Invoke(new Action(() => {
+                for (int i = 0; i < stack.Length; i++)
+                {
+                    if (!Equals(StackView.Items[i], stack[i].ToString()))
+                    {
+                        StackView.Items[i] = stack[i].ToString();
+                    }
+                }
+            }));
 
 
         }
