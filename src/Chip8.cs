@@ -261,6 +261,10 @@ namespace CHIP_8_Emulator
            };
         }
 
+        /*
+         OPCODE FUNCTIONS:
+             */
+
         private void clear_or_return(OpCode data){
             // Clears screen
             if (data.NN == 0xE0){
@@ -425,8 +429,32 @@ namespace CHIP_8_Emulator
             }
         }
 
+        // Skips the next instruction if a certain key is pressed.
         private void skip_on_key(OpCode data){
-            
+            if ((if_key_pressed() && _pressedKeys.Contains(_registers[data.X])) || (!if_key_pressed() && !_pressedKeys.Contains(_ram[data.X])))
+            {
+                skip_instruction();
+            }
+        }
+
+        private bool if_key_pressed()
+        {
+            bool key_pressed;
+            if (data.NN == 0x9E)
+            {
+                key_pressed = true;
+            }
+            else if(data.NN == 0xA1)
+            {
+                key_pressed = false;
+            }
+            else
+            {
+                key_pressed = false;
+                Console.WriteLine("ERROR: Key not pressed, but received unexpected value.");
+            }
+
+            return key_pressed;
         }
 
         private void skip_instruction()
