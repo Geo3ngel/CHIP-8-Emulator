@@ -1,4 +1,4 @@
-[Ll]ibrary/
+﻿﻿[Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
 [Bb]uild/
@@ -36,4 +36,4 @@ sysinfo.txt
 *.unitypackage
 
 # .idea file from Rider
-.idea
+*.idea
