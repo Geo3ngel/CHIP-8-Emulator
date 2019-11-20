@@ -7,7 +7,7 @@ namespace Chip8_GUI.src
     public class Chip8
     {
         // CHIP-8 VM Components
-        private ushort _addressRegister;
+        private ushort _addressCounter;
         private readonly byte[] _registers;
         private ushort _programCounter;
         private byte _stackPointer;
@@ -33,7 +33,7 @@ namespace Chip8_GUI.src
             // CHIP-8 Components
             _registers = new byte[16];
             _programCounter = 0x200;
-            _addressRegister = 0x200;
+            _addressCounter = 0x200;
             _stack = new ushort[16];
             _stackPointer = 0;
             _ram = new byte[0x1000];
@@ -228,17 +228,17 @@ namespace Chip8_GUI.src
             _soundTimer = (byte) data.X;
         }
 
-        private void add_x_to_address_register(OpCode data) { _addressRegister += _registers[data.X]; }
+        private void add_x_to_address_register(OpCode data) { _addressCounter += _registers[data.X]; }
 
         // Sets the address register to the current location of the 'font' sprite for the sepcified character.
-        private  void set_address_register_for_char(OpCode data) { _addressRegister = (ushort)(_registers[data.X] * 5); }
+        private  void set_address_register_for_char(OpCode data) { _addressCounter = (ushort)(_registers[data.X] * 5); }
 
         // Stores a binary decimal into ram
         private void set_BCD(OpCode data)
         {
-            _ram[_addressRegister] = (byte)((_registers[data.X]/100)%10);
-            _ram[_addressRegister+1] = (byte)((_registers[data.X]/10)%10);
-            _ram[_addressRegister+2] = (byte)((_registers[data.X])%10);
+            _ram[_addressCounter] = (byte)((_registers[data.X]/100)%10);
+            _ram[_addressCounter+1] = (byte)((_registers[data.X]/10)%10);
+            _ram[_addressCounter+2] = (byte)((_registers[data.X])%10);
         }
 
         // Saves all registers to the address register.
@@ -246,7 +246,7 @@ namespace Chip8_GUI.src
         {
             for(var i=0; i<= data.X; i++)
             {
-                _ram[_addressRegister + i] = _registers[i];
+                _ram[_addressCounter + i] = _registers[i];
             }
         }
 
@@ -255,7 +255,7 @@ namespace Chip8_GUI.src
         {
             for(var i = 0; i <= data.X; i++)
             {
-                _registers[i] = _ram[_addressRegister + i];
+                _registers[i] = _ram[_addressCounter + i];
             }
         }
 
@@ -375,7 +375,7 @@ namespace Chip8_GUI.src
         }
 
         private void set_adress_register(OpCode data){
-            _addressRegister = data.NNN;
+            _addressCounter = data.NNN;
         }
 
         // Just to the value in the register offset by NNN value 
@@ -402,7 +402,7 @@ namespace Chip8_GUI.src
             for (int i = 0; i < data.N; i++)
             {
                 // Selects line of the sprite to render
-                var spriteLine = _ram[_addressRegister + i];
+                var spriteLine = _ram[_addressCounter + i];
 
                 for (var bit = 0; bit < 8; bit++)
                 {
@@ -475,6 +475,26 @@ namespace Chip8_GUI.src
         public byte[] get_registers()
         {
             return _registers;
+        }
+
+        public ushort get_pc()
+        {
+            return _programCounter;
+        }
+
+        public ushort get_address_counter()
+        {
+            return _addressCounter;
+        }
+
+        public byte get_stack_pointer()
+        {
+            return _stackPointer;
+        }
+
+        public ushort[] get_stack()
+        {
+            return _stack;
         }
     }
 }
