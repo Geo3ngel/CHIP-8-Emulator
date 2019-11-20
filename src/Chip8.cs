@@ -36,7 +36,6 @@ namespace Chip8_GUI.src
             _stack = new ushort[16];
             _ram = new byte[0x1000];
 
-            // TODO: Consider passing in Screen object reference.
             _screen = screen;
             // Timers
             //this._beep = beep;
@@ -44,6 +43,32 @@ namespace Chip8_GUI.src
             // opCodes
             _pressedKeys = new HashSet<byte>();
             _random = new Random();
+
+            // Define Opcode Dict.
+            _opCodes = new Dictionary<byte, Action<OpCode>>
+            {
+               {0x0, clear_or_return},
+               {0x1, jump_to_NNN},
+               {0x2, call_subroutine_NNN},
+               {0x3, skip_if_X_equals_NN},
+               {0x4, skip_if_X_not_equal_NN},
+               {0x5, skip_if_X_equals_Y},
+               {0x6, set_X},
+               {0x7, add_X},
+               {0x8, math_operation},
+               {0x9, skip_if_X_not_equals_Y},
+               {0xA, set_adress_register},
+               {0xB, jump_offset_by_NNN},
+               {0xC, set_X_rand},
+               {0xD, draw_sprite},
+               {0xE, skip_on_key},
+               {0xF, run_misc_op}
+            };
+
+            // Loads the Fonts from the rom into memory
+            set_up_font();
+
+           Console.WriteLine("CHIP-8 Emulator Initialized");
         }
         public void load_ROM(byte[] data) =>
             // Loads the data from the rom into memory @ the program counter.
@@ -228,36 +253,6 @@ namespace Chip8_GUI.src
                 _registers[i] = _ram[_addressRegister + i];
             }
         }
-        
-        // Processes each opcode from rom
-        public void Run()
-        {
-            Console.WriteLine("Starting CHIP-8 Emulator");
-            // TODO:  Set up graphics here
-
-            // TODO: Ensure the font is written out
-
-            // Map Chip-8 opcodes to C# functions that are their equivalent
-           _opCodes = new Dictionary<byte, Action<OpCode>>
-           {
-               {0x0, clear_or_return},
-               {0x1, jump_to_NNN},
-               {0x2, call_subroutine_NNN},
-               {0x3, skip_if_X_equals_NN},
-               {0x4, skip_if_X_not_equal_NN},
-               {0x5, skip_if_X_equals_Y},
-               {0x6, set_X},
-               {0x7, add_X},
-               {0x8, math_operation},
-               {0x9, skip_if_X_not_equals_Y},
-               {0xA, set_adress_register},
-               {0xB, jump_offset_by_NNN},
-               {0xC, set_X_rand},
-               {0xD, draw_sprite},
-               {0xE, skip_on_key},
-               {0xF, run_misc_op}
-           };
-        }
 
         /*
          OPCODE FUNCTIONS:
@@ -282,6 +277,8 @@ namespace Chip8_GUI.src
         // Jumps to the subroutine
         private void call_subroutine_NNN(OpCode data){
             // Push the current Program counter onto the stack
+
+            // TODO: Handle out of bounds exceptions here?
             _stack[_stackPointer++] = _programCounter;
             // Changes program counter to target the subroutine.
             _programCounter = data.NNN;
