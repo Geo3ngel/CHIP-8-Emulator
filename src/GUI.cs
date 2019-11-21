@@ -22,7 +22,8 @@ namespace Chip8_GUI.src
 
         // For timing..
         Stopwatch stopWatch = Stopwatch.StartNew();
-        TimeSpan targetElapsedTime60Hz = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 60);
+        static long tps_mod = 1;
+        TimeSpan targetElapsedTime60Hz = TimeSpan.FromTicks((TimeSpan.TicksPerSecond * tps_mod) / 60);
         TimeSpan targetElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 1000);
         TimeSpan lastTime;
 
@@ -81,6 +82,10 @@ namespace Chip8_GUI.src
             Console.Beep(500, milliseconds);
         }
 
+        /*
+         Keypad/Input
+         */
+
         Dictionary<Keys, byte> keyMapping = new Dictionary<Keys, byte>
         {
             { Keys.D1, 0x1 },
@@ -104,14 +109,79 @@ namespace Chip8_GUI.src
         void SetKeyDown(object sender, KeyEventArgs e)
         {
             if (keyMapping.ContainsKey(e.KeyCode))
+            {
                 chip8.keyDown(keyMapping[e.KeyCode]);
+                setKeypad(e, false);
+            }
         }
 
         void SetKeyUp(object sender, KeyEventArgs e)
         {
             if (keyMapping.ContainsKey(e.KeyCode))
+            {
                 chip8.keyUp(keyMapping[e.KeyCode]);
+                setKeypad(e, true);
+            }
         }
+
+        private void setKeypad(KeyEventArgs e, bool enable)
+        {
+            switch (keyMapping[e.KeyCode])
+            {
+                case 0x0:
+                    keypad0.Enabled = enable;
+                    break;
+                case 0x1:
+                    keypad1.Enabled = enable;
+                    break;
+                case 0x2:
+                    keypad2.Enabled = enable;
+                    break;
+                case 0x3:
+                    keypad3.Enabled = enable;
+                    break;
+                case 0x4:
+                    keypad4.Enabled = enable;
+                    break;
+                case 0x5:
+                    keypad5.Enabled = enable;
+                    break;
+                case 0x6:
+                    keypad6.Enabled = enable;
+                    break;
+                case 0x7:
+                    keypad7.Enabled = enable;
+                    break;
+                case 0x8:
+                    keypad8.Enabled = enable;
+                    break;
+                case 0x9:
+                    keypad9.Enabled = enable;
+                    break;
+                case 0xA:
+                    keypadA.Enabled = enable;
+                    break;
+                case 0xB:
+                    keypadB.Enabled = enable;
+                    break;
+                case 0xC:
+                    keypadC.Enabled = enable;
+                    break;
+                case 0xD:
+                    keypadD.Enabled = enable;
+                    break;
+                case 0xE:
+                    keypadE.Enabled = enable;
+                    break;
+                case 0xF:
+                    keypadF.Enabled = enable;
+                    break;
+            }
+        }
+
+        /*
+         Game Looping Logic
+         */
 
         void StartGameLoop()
         {
@@ -309,6 +379,12 @@ namespace Chip8_GUI.src
                 step10.Enabled = false;
                 step100.Enabled = false;
             }
+        }
+
+        private void SpeedBar_Scroll(object sender, EventArgs e)
+        {
+            tps_mod = speedBar.Value/10;
+            targetElapsedTime60Hz = TimeSpan.FromTicks((TimeSpan.TicksPerSecond * tps_mod) / 60);
         }
     }
 }

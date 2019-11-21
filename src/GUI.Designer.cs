@@ -44,6 +44,10 @@ namespace Chip8_GUI.src
             this.label4 = new System.Windows.Forms.Label();
             this.stepperMode = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.speedBar = new System.Windows.Forms.TrackBar();
             this.step100 = new System.Windows.Forms.Button();
             this.step10 = new System.Windows.Forms.Button();
             this.step5 = new System.Windows.Forms.Button();
@@ -71,6 +75,7 @@ namespace Chip8_GUI.src
             this.panel2 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.display_screen)).BeginInit();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.speedBar)).BeginInit();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -112,8 +117,6 @@ namespace Chip8_GUI.src
             this.RamView.Name = "RamView";
             this.RamView.Size = new System.Drawing.Size(174, 354);
             this.RamView.TabIndex = 4;
-            this.RamView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SetKeyDown);
-            this.RamView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.SetKeyUp);
             // 
             // RegistersView
             // 
@@ -236,6 +239,10 @@ namespace Chip8_GUI.src
             // 
             this.groupBox1.AutoSize = true;
             this.groupBox1.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.groupBox1.Controls.Add(this.label9);
+            this.groupBox1.Controls.Add(this.label8);
+            this.groupBox1.Controls.Add(this.label7);
+            this.groupBox1.Controls.Add(this.speedBar);
             this.groupBox1.Controls.Add(this.step100);
             this.groupBox1.Controls.Add(this.step10);
             this.groupBox1.Controls.Add(this.step5);
@@ -260,6 +267,44 @@ namespace Chip8_GUI.src
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Diagnosics";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(808, 41);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(52, 16);
+            this.label9.TabIndex = 23;
+            this.label9.Text = "Faster";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(594, 41);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(55, 16);
+            this.label8.TabIndex = 22;
+            this.label8.Text = "Slower";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(659, 32);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(133, 16);
+            this.label7.TabIndex = 21;
+            this.label7.Text = "CPU Speed Scale";
+            // 
+            // speedBar
+            // 
+            this.speedBar.Location = new System.Drawing.Point(586, 60);
+            this.speedBar.Maximum = 30;
+            this.speedBar.Minimum = 1;
+            this.speedBar.Name = "speedBar";
+            this.speedBar.Size = new System.Drawing.Size(286, 45);
+            this.speedBar.TabIndex = 30;
+            this.speedBar.Value = 10;
+            this.speedBar.Scroll += new System.EventHandler(this.SpeedBar_Scroll);
             // 
             // step100
             // 
@@ -349,9 +394,9 @@ namespace Chip8_GUI.src
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 4;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 48.71795F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 51.28205F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 41F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 51.94805F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 48.05195F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel1.Controls.Add(this.keypadF, 3, 3);
             this.tableLayoutPanel1.Controls.Add(this.keypadB, 2, 3);
@@ -395,10 +440,10 @@ namespace Chip8_GUI.src
             // 
             this.keypadB.AutoSize = true;
             this.keypadB.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.keypadB.Location = new System.Drawing.Point(76, 115);
+            this.keypadB.Location = new System.Drawing.Point(77, 115);
             this.keypadB.Margin = new System.Windows.Forms.Padding(1);
             this.keypadB.Name = "keypadB";
-            this.keypadB.Size = new System.Drawing.Size(39, 33);
+            this.keypadB.Size = new System.Drawing.Size(38, 33);
             this.keypadB.TabIndex = 14;
             this.keypadB.Text = "B";
             this.keypadB.UseVisualStyleBackColor = true;
@@ -407,10 +452,10 @@ namespace Chip8_GUI.src
             // 
             this.keypad0.AutoSize = true;
             this.keypad0.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.keypad0.Location = new System.Drawing.Point(38, 115);
+            this.keypad0.Location = new System.Drawing.Point(40, 115);
             this.keypad0.Margin = new System.Windows.Forms.Padding(1);
             this.keypad0.Name = "keypad0";
-            this.keypad0.Size = new System.Drawing.Size(36, 33);
+            this.keypad0.Size = new System.Drawing.Size(35, 33);
             this.keypad0.TabIndex = 13;
             this.keypad0.Text = "0";
             this.keypad0.UseVisualStyleBackColor = true;
@@ -422,7 +467,7 @@ namespace Chip8_GUI.src
             this.keypadA.Location = new System.Drawing.Point(1, 115);
             this.keypadA.Margin = new System.Windows.Forms.Padding(1);
             this.keypadA.Name = "keypadA";
-            this.keypadA.Size = new System.Drawing.Size(35, 33);
+            this.keypadA.Size = new System.Drawing.Size(37, 33);
             this.keypadA.TabIndex = 12;
             this.keypadA.Text = "A";
             this.keypadA.UseVisualStyleBackColor = true;
@@ -443,10 +488,10 @@ namespace Chip8_GUI.src
             // 
             this.keypad9.AutoSize = true;
             this.keypad9.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.keypad9.Location = new System.Drawing.Point(76, 75);
+            this.keypad9.Location = new System.Drawing.Point(77, 75);
             this.keypad9.Margin = new System.Windows.Forms.Padding(1);
             this.keypad9.Name = "keypad9";
-            this.keypad9.Size = new System.Drawing.Size(39, 38);
+            this.keypad9.Size = new System.Drawing.Size(38, 38);
             this.keypad9.TabIndex = 10;
             this.keypad9.Text = "9";
             this.keypad9.UseVisualStyleBackColor = true;
@@ -455,10 +500,10 @@ namespace Chip8_GUI.src
             // 
             this.keypad8.AutoSize = true;
             this.keypad8.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.keypad8.Location = new System.Drawing.Point(38, 75);
+            this.keypad8.Location = new System.Drawing.Point(40, 75);
             this.keypad8.Margin = new System.Windows.Forms.Padding(1);
             this.keypad8.Name = "keypad8";
-            this.keypad8.Size = new System.Drawing.Size(36, 38);
+            this.keypad8.Size = new System.Drawing.Size(35, 38);
             this.keypad8.TabIndex = 9;
             this.keypad8.Text = "8";
             this.keypad8.UseVisualStyleBackColor = true;
@@ -470,7 +515,7 @@ namespace Chip8_GUI.src
             this.keypad7.Location = new System.Drawing.Point(1, 75);
             this.keypad7.Margin = new System.Windows.Forms.Padding(1);
             this.keypad7.Name = "keypad7";
-            this.keypad7.Size = new System.Drawing.Size(35, 38);
+            this.keypad7.Size = new System.Drawing.Size(37, 38);
             this.keypad7.TabIndex = 8;
             this.keypad7.Text = "7";
             this.keypad7.UseVisualStyleBackColor = true;
@@ -491,10 +536,10 @@ namespace Chip8_GUI.src
             // 
             this.keypad6.AutoSize = true;
             this.keypad6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.keypad6.Location = new System.Drawing.Point(76, 37);
+            this.keypad6.Location = new System.Drawing.Point(77, 37);
             this.keypad6.Margin = new System.Windows.Forms.Padding(1);
             this.keypad6.Name = "keypad6";
-            this.keypad6.Size = new System.Drawing.Size(39, 36);
+            this.keypad6.Size = new System.Drawing.Size(38, 36);
             this.keypad6.TabIndex = 6;
             this.keypad6.Text = "6";
             this.keypad6.UseVisualStyleBackColor = true;
@@ -503,10 +548,10 @@ namespace Chip8_GUI.src
             // 
             this.keypad5.AutoSize = true;
             this.keypad5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.keypad5.Location = new System.Drawing.Point(38, 37);
+            this.keypad5.Location = new System.Drawing.Point(40, 37);
             this.keypad5.Margin = new System.Windows.Forms.Padding(1);
             this.keypad5.Name = "keypad5";
-            this.keypad5.Size = new System.Drawing.Size(36, 36);
+            this.keypad5.Size = new System.Drawing.Size(35, 36);
             this.keypad5.TabIndex = 5;
             this.keypad5.Text = "5";
             this.keypad5.UseVisualStyleBackColor = true;
@@ -518,7 +563,7 @@ namespace Chip8_GUI.src
             this.keypad4.Location = new System.Drawing.Point(1, 37);
             this.keypad4.Margin = new System.Windows.Forms.Padding(1);
             this.keypad4.Name = "keypad4";
-            this.keypad4.Size = new System.Drawing.Size(35, 36);
+            this.keypad4.Size = new System.Drawing.Size(37, 36);
             this.keypad4.TabIndex = 4;
             this.keypad4.Text = "4";
             this.keypad4.UseVisualStyleBackColor = true;
@@ -539,10 +584,10 @@ namespace Chip8_GUI.src
             // 
             this.keypad3.AutoSize = true;
             this.keypad3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.keypad3.Location = new System.Drawing.Point(76, 1);
+            this.keypad3.Location = new System.Drawing.Point(77, 1);
             this.keypad3.Margin = new System.Windows.Forms.Padding(1);
             this.keypad3.Name = "keypad3";
-            this.keypad3.Size = new System.Drawing.Size(39, 34);
+            this.keypad3.Size = new System.Drawing.Size(38, 34);
             this.keypad3.TabIndex = 2;
             this.keypad3.Text = "3";
             this.keypad3.UseVisualStyleBackColor = true;
@@ -551,10 +596,10 @@ namespace Chip8_GUI.src
             // 
             this.keypad2.AutoSize = true;
             this.keypad2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.keypad2.Location = new System.Drawing.Point(38, 1);
+            this.keypad2.Location = new System.Drawing.Point(40, 1);
             this.keypad2.Margin = new System.Windows.Forms.Padding(1);
             this.keypad2.Name = "keypad2";
-            this.keypad2.Size = new System.Drawing.Size(36, 34);
+            this.keypad2.Size = new System.Drawing.Size(35, 34);
             this.keypad2.TabIndex = 1;
             this.keypad2.Text = "2";
             this.keypad2.UseVisualStyleBackColor = true;
@@ -566,7 +611,7 @@ namespace Chip8_GUI.src
             this.keypad1.Location = new System.Drawing.Point(1, 1);
             this.keypad1.Margin = new System.Windows.Forms.Padding(1);
             this.keypad1.Name = "keypad1";
-            this.keypad1.Size = new System.Drawing.Size(35, 34);
+            this.keypad1.Size = new System.Drawing.Size(37, 34);
             this.keypad1.TabIndex = 0;
             this.keypad1.Text = "1";
             this.keypad1.UseVisualStyleBackColor = true;
@@ -590,6 +635,7 @@ namespace Chip8_GUI.src
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.KeyPreview = true;
             this.Name = "GUI";
             this.Text = "Chip-8 Emulator";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SetKeyDown);
@@ -597,6 +643,7 @@ namespace Chip8_GUI.src
             ((System.ComponentModel.ISupportInitialize)(this.display_screen)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.speedBar)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -648,5 +695,9 @@ namespace Chip8_GUI.src
         private System.Windows.Forms.Button keypad2;
         private System.Windows.Forms.Button keypad1;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TrackBar speedBar;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label8;
     }
 }
