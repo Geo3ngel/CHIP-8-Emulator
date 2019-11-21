@@ -16,9 +16,10 @@ namespace Chip8_GUI.src
         Bitmap display;
         Screen screen;
         private int stepper_break;
+        private PathManager pathManager;
 
         // TODO: Add in pathing manager component here
-        string rom = "C:\\Users\\GeoEn\\Desktop\\Coding\\CHIP-8-Emulator\\games\\Pong-1p.ch8";
+        string rom; // = "C:\\Users\\GeoEn\\Desktop\\Coding\\CHIP-8-Emulator\\games\\Pong-1p.ch8";
 
         // For timing..
         Stopwatch stopWatch = Stopwatch.StartNew();
@@ -36,7 +37,11 @@ namespace Chip8_GUI.src
             screen = new Screen();
             chip8 = new Chip8(screen);
 
-            chip8.load_ROM(File.ReadAllBytes(rom));
+            // Sets up pathing manager
+            pathManager = new PathManager();
+
+            // Load Roms from the games directory
+            load_roms();
 
             KeyDown += SetKeyDown;
             KeyUp += SetKeyUp;
@@ -45,9 +50,13 @@ namespace Chip8_GUI.src
             initMemoryDisplay();
         }
 
-        protected override void OnLoad(EventArgs e)
+        // Loads the roms from the games directory into the romSelect ComboBox as options.
+        private void load_roms()
         {
-            StartGameLoop();
+            foreach(string gameName in pathManager.get_games())
+            {
+                romSelect.Items.Add(gameName);
+            }
         }
 
         void WriteToDisplay(bool[,] pixels)
@@ -124,6 +133,7 @@ namespace Chip8_GUI.src
             }
         }
 
+        // Sets the relevant keypad to disabled/enabled to show it is being pressed.
         private void setKeypad(KeyEventArgs e, bool enable)
         {
             switch (keyMapping[e.KeyCode])
@@ -333,9 +343,6 @@ namespace Chip8_GUI.src
                 }
             }));
         }
-            /*
-             keypad response functions
-             */
 
             /*
              Stepper Button functions
@@ -385,6 +392,17 @@ namespace Chip8_GUI.src
         {
             tps_mod = speedBar.Value/10;
             targetElapsedTime60Hz = TimeSpan.FromTicks((TimeSpan.TicksPerSecond * tps_mod) / 60);
+        }
+
+        // Loads the Rom & starts the game
+        private void RomSelect_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // TODO: Test edge cases here!
+            string romPath = pathManager.get_game_path(romSelect.SelectedItem.ToString());
+            chip8.load_ROM(File.ReadAllBytes(romPath));
+
+            // Start the Emulator
+            StartGameLoop();
         }
     }
 }
