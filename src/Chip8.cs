@@ -446,14 +446,14 @@ namespace Chip8_GUI.src
 
                     // If we wiped out a pixel, set flag for collission.
                     if (oldBit != 0 && newBit == 0)
-                        _ram[0xF] = 1;
+                        _registers[0xF] = 1;
                 }
             }
         }
 
         // Skips the next instruction if a certain key is pressed.
         private void skip_on_key(OpCodeStruct data){
-            if ((if_key_pressed(data) && _pressedKeys.Contains(_registers[data.X])) || (!if_key_pressed(data) && !_pressedKeys.Contains(_ram[data.X])))
+            if ((if_key_pressed(data) && _pressedKeys.Contains(_registers[data.X])) || (!if_key_pressed(data) && !_pressedKeys.Contains(_registers[data.X])))
             {
                 skip_instruction();
             }
