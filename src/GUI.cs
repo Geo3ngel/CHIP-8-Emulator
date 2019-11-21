@@ -216,7 +216,6 @@ namespace Chip8_GUI.src
                 var currentTime = stopWatch.Elapsed;
                 var elapsedTime = currentTime - lastTime;
 
-                // TODO: Make Slider for this elapsed Time value to determine delay for clock speed slider.
                 while (elapsedTime >= targetElapsedTime60Hz)
                 {
                     this.Invoke((Action)rom_tick);
@@ -224,7 +223,9 @@ namespace Chip8_GUI.src
                     lastTime += targetElapsedTime60Hz;
                 }
 
-                load_next_OpCode();
+                this.Invoke((Action)load_next_OpCode); 
+
+                // Loads the memory components into GUI
                 displayMemory();
                 Thread.Sleep(targetElapsedTime);
             }
@@ -238,7 +239,7 @@ namespace Chip8_GUI.src
             chip8.Tick();
 
             // Update Graphics here based on "Screen"
-            WriteToDisplay(screen.getDisplay());
+            WriteToDisplay(screen.getDisplay()); // TODO: Validate that this screen is actually the same as the one passed into Chip8? (It is being modified)
             display_screen.Refresh();
         }
 

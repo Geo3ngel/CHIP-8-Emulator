@@ -4,6 +4,13 @@ using System.Linq;
 
 namespace Chip8_GUI.src
 {
+    struct OpCodeStruct
+    {
+        public ushort OpCode;
+        public ushort NNN;
+        public byte NN, X, Y, N;
+    }
+
     public class Chip8
     {
         // CHIP-8 VM Components
@@ -20,7 +27,7 @@ namespace Chip8_GUI.src
         private Action<int> _beep;
 
         // opCodes
-        private Dictionary<byte, Action<OpCode>> _opCodes;
+        private Dictionary<byte, Action<OpCodeStruct>> _opCodes;
         private readonly HashSet<byte> _pressedKeys;
         private Random _random;
 
@@ -46,7 +53,7 @@ namespace Chip8_GUI.src
             _random = new Random();
 
             // Define Opcode Dict.
-            _opCodes = new Dictionary<byte, Action<OpCode>>
+            _opCodes = new Dictionary<byte, Action<OpCodeStruct>>
             {
                {0x0, clear_or_return},
                {0x1, jump_to_NNN},
@@ -152,21 +159,22 @@ namespace Chip8_GUI.src
             var opCode = (ushort)(_ram[_programCounter++] << 8 | _ram[_programCounter++]);
 
             // Decodes the OpCode
-            var code = new OpCode(
-                opCode,
-                (byte)(opCode & 0x000F),
-                (byte)(opCode & 0x00FF),
-                 (byte)(opCode & 0x0FFF),
-                (byte)((opCode & 0x0F00) >> 8),
-                (byte)((opCode & 0x00F0) >> 4)
-            );
+            var code = new OpCodeStruct()
+            {
+                OpCode = opCode,
+                NNN = (ushort)(opCode & 0x0FFF),
+                NN = (byte)(opCode & 0x00FF),
+                N = (byte)(opCode & 0x000F),
+                X = (byte)((opCode & 0x0F00) >> 8),
+                Y = (byte)((opCode & 0x00F0) >> 4),
+            };
 
             // Excecutes the OpCode
             _opCodes[(byte)(opCode >> 12)](code);
         }
 
         // Activate Miscilanious Opcode
-        private void run_misc_op(OpCode data)
+        private void run_misc_op(OpCodeStruct data)
         {
             switch (data.NN)
             {
@@ -208,13 +216,13 @@ namespace Chip8_GUI.src
         */
 
         // Sets register to current value of the delay timer
-        private void get_delay(OpCode data)
+        private void get_delay(OpCodeStruct data)
         {
             _registers[data.X] = _delayTimer;
         }
 
         // Will be called repeatedly by the game loop until the desired key is pressed to progress the program counter.
-        private void get_key(OpCode data)
+        private void get_key(OpCodeStruct data)
         {
             if (_pressedKeys.Count > 0)
             {
@@ -226,12 +234,12 @@ namespace Chip8_GUI.src
             }
         }
 
-        private void set_delay_timer(OpCode data)
+        private void set_delay_timer(OpCodeStruct data)
         {
             _delayTimer = _registers[data.X];
         }
 
-        private void set_sound_timer(OpCode data)
+        private void set_sound_timer(OpCodeStruct data)
         {
             // TODO: Update this to reflect the proper beeping procedure.
             // beep((int)(registers[data.X] * (1000f / 60)));   #Alternative way of playing it for X seconds?
@@ -240,13 +248,13 @@ namespace Chip8_GUI.src
             _soundTimer = (byte) data.X;
         }
 
-        private void add_x_to_address_register(OpCode data) { _addressCounter += _registers[data.X]; }
+        private void add_x_to_address_register(OpCodeStruct data) { _addressCounter += _registers[data.X]; }
 
         // Sets the address register to the current location of the 'font' sprite for the sepcified character.
-        private  void set_address_register_for_char(OpCode data) { _addressCounter = (ushort)(_registers[data.X] * 5); }
+        private  void set_address_register_for_char(OpCodeStruct data) { _addressCounter = (ushort)(_registers[data.X] * 5); }
 
         // Stores a binary decimal into ram
-        private void set_BCD(OpCode data)
+        private void set_BCD(OpCodeStruct data)
         {
             _ram[_addressCounter] = (byte)((_registers[data.X]/100)%10);
             _ram[_addressCounter+1] = (byte)((_registers[data.X]/10)%10);
@@ -254,7 +262,7 @@ namespace Chip8_GUI.src
         }
 
         // Saves all registers to the address register.
-        private void reg_dump(OpCode data)
+        private void reg_dump(OpCodeStruct data)
         {
             for(var i=0; i<= data.X; i++)
             {
@@ -263,7 +271,7 @@ namespace Chip8_GUI.src
         }
 
         // Loads all registers from the address register.
-        private void reg_load(OpCode data)
+        private void reg_load(OpCodeStruct data)
         {
             for(var i = 0; i <= data.X; i++)
             {
@@ -275,7 +283,7 @@ namespace Chip8_GUI.src
          OPCODE FUNCTIONS:
              */
 
-        private void clear_or_return(OpCode data){
+        private void clear_or_return(OpCodeStruct data){
             // Clears screen
             if (data.NN == 0xE0){
                 _screen.clear();
@@ -287,12 +295,12 @@ namespace Chip8_GUI.src
         }
 
         // Jumps to the localtion specified in the current OpCode's nnn byte.
-        private void jump_to_NNN(OpCode data){
+        private void jump_to_NNN(OpCodeStruct data){
             _programCounter = data.NNN;
         }
 
         // Jumps to the subroutine
-        private void call_subroutine_NNN(OpCode data){
+        private void call_subroutine_NNN(OpCodeStruct data){
             // Push the current Program counter onto the stack
 
             push(_programCounter);
@@ -301,32 +309,33 @@ namespace Chip8_GUI.src
             Console.WriteLine("Data Value: {0}", data.NNN);
         }
 
-        private void skip_if_X_equals_NN(OpCode data){
-            if(_registers[data.X] == _registers[data.NN])
+        private void skip_if_X_equals_NN(OpCodeStruct data){
+            // TODO: Fix out of bounds error
+            if(_registers[data.X] == data.NN)
             {
                 skip_instruction();
             }
         }
 
-        private void skip_if_X_not_equal_NN(OpCode data){
+        private void skip_if_X_not_equal_NN(OpCodeStruct data){
             if(_registers[data.X] != data.NN)
             {
                 skip_instruction();
             }
         }
 
-        private void skip_if_X_equals_Y(OpCode data){
+        private void skip_if_X_equals_Y(OpCodeStruct data){
             if (_registers[data.X] == _registers[data.Y])
             {   
                 skip_instruction();
             }
         }
 
-        private void set_X(OpCode data){
+        private void set_X(OpCodeStruct data){
             _registers[data.X] = data.NN;
         }
 
-        private void add_X(OpCode data){
+        private void add_X(OpCodeStruct data){
             try
             {
                 _registers[data.X] += data.NN;
@@ -337,7 +346,7 @@ namespace Chip8_GUI.src
             }
         }
 
-        private void math_operation(OpCode data){
+        private void math_operation(OpCodeStruct data){
             // Use the opcode's N byte to determine which mathematic operation to perform with X & Y.
             switch (data.N)
             {
@@ -379,29 +388,29 @@ namespace Chip8_GUI.src
             }
         }
 
-        private void skip_if_X_not_equals_Y(OpCode data){
+        private void skip_if_X_not_equals_Y(OpCodeStruct data){
             if (_registers[data.X] != _registers[data.Y])
             {
                 skip_instruction();
             }
         }
 
-        private void set_adress_register(OpCode data){
+        private void set_adress_register(OpCodeStruct data){
             _addressCounter = data.NNN;
         }
 
         // Just to the value in the register offset by NNN value 
-        private void jump_offset_by_NNN(OpCode data){
+        private void jump_offset_by_NNN(OpCodeStruct data){
             _programCounter = (ushort)(_registers[0] + data.NNN);
         }
 
         // &s a random integer between 0 and 256with NN
-        private void set_X_rand(OpCode data){
+        private void set_X_rand(OpCodeStruct data){
             _registers[data.X] = (byte)(_random.Next(0, 256) & data.NN);
         }
 
         // Draws a specified sprite to the 'Screen' Object.
-        private void draw_sprite(OpCode data){
+        private void draw_sprite(OpCodeStruct data){
             var spriteX = _ram[data.X];
             var spriteY = _ram[data.Y];
 
@@ -443,14 +452,14 @@ namespace Chip8_GUI.src
         }
 
         // Skips the next instruction if a certain key is pressed.
-        private void skip_on_key(OpCode data){
+        private void skip_on_key(OpCodeStruct data){
             if ((if_key_pressed(data) && _pressedKeys.Contains(_registers[data.X])) || (!if_key_pressed(data) && !_pressedKeys.Contains(_ram[data.X])))
             {
                 skip_instruction();
             }
         }
 
-        private bool if_key_pressed(OpCode data)
+        private bool if_key_pressed(OpCodeStruct data)
         {
             bool key_pressed;
             if (data.NN == 0x9E)
