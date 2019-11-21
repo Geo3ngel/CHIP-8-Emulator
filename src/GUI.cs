@@ -15,7 +15,7 @@ namespace Chip8_GUI.src
         Chip8 chip8;
         Bitmap display;
         Screen screen;
-        private bool stepper_break;
+        private int stepper_break;
 
         // TODO: Add in pathing manager component here
         string rom = "C:\\Users\\GeoEn\\Desktop\\Coding\\CHIP-8-Emulator\\games\\Pong-1p.ch8";
@@ -40,7 +40,7 @@ namespace Chip8_GUI.src
             KeyDown += SetKeyDown;
             KeyUp += SetKeyUp;
 
-            stepper_break = false;
+            stepper_break = 0;
             initMemoryDisplay();
         }
 
@@ -105,22 +105,12 @@ namespace Chip8_GUI.src
         {
             if (keyMapping.ContainsKey(e.KeyCode))
                 chip8.keyDown(keyMapping[e.KeyCode]);
-            else if (e.KeyCode == Keys.Space)
-            { 
-                stepper_break = true;
-                Console.WriteLine("Stepper break: True");
-            }
         }
 
         void SetKeyUp(object sender, KeyEventArgs e)
         {
             if (keyMapping.ContainsKey(e.KeyCode))
                 chip8.keyUp(keyMapping[e.KeyCode]);
-            else if (e.KeyCode == Keys.Space)
-            {
-                Console.WriteLine("Stepper break: False");
-                stepper_break = false;
-            }
         }
 
         void StartGameLoop()
@@ -135,8 +125,12 @@ namespace Chip8_GUI.src
                 while (stepperMode.Checked)
                 {
                     // Waits for space key to be pressed to do another run loop.
-                    if (stepper_break)
+                    if (stepper_break > 0)
+                    {
+                        stepper_break--;
                         break;
+                    }
+                        
                 }
 
                 var currentTime = stopWatch.Elapsed;
@@ -208,7 +202,7 @@ namespace Chip8_GUI.src
 
             // Updates Ram Display
             Invoke(new Action(() => {
-                for(int i = 0; i < ram.Length; i++)
+                for (int i = 0; i < ram.Length; i++)
                 {
                     if (!Equals(RamView.Items[i], ram[i].ToString("x")))
                     {
@@ -268,9 +262,33 @@ namespace Chip8_GUI.src
                     }
                 }
             }));
+        }
+            /*
+             keypad response functions
+             */
 
-
+            /*
+             Stepper Button functions
+             */
+    
+        private void Step1_Click(object sender, EventArgs e)
+        {
+            stepper_break += 1;
         }
 
+        private void Step5_Click(object sender, EventArgs e)
+        {
+            stepper_break += 5;
+        }
+
+        private void Step10_Click(object sender, EventArgs e)
+        {
+            stepper_break += 10;
+        }
+
+        private void Step100_Click(object sender, EventArgs e)
+        {
+            stepper_break += 100;
+        }
     }
 }
