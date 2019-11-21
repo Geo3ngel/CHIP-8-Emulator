@@ -77,6 +77,11 @@ namespace Chip8_GUI.src
             update = true;
         }
 
+        public Boolean needUpdate()
+        {
+            return update;
+        }
+
         public bool[,] getDisplay()
         {
             return _pixels;
