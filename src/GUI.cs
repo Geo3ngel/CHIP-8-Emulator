@@ -168,10 +168,6 @@ namespace Chip8_GUI.src
             display_screen.Refresh();
         }
 
-        private void GUI_Load(object sender, EventArgs e)
-        {
-
-        }
 
         // Sets up the Memory Display with the proper amount of items.
         private void initMemoryDisplay()
