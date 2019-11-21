@@ -15,9 +15,10 @@ namespace Chip8_GUI.src
         Chip8 chip8;
         Bitmap display;
         Screen screen;
+        private bool stepper_break;
 
         // TODO: Add in pathing manager component here
-        string rom = "C:\\Users\\GeoEn\\Desktop\\Coding\\CHIP-8-Emulator\\games\\Nim.ch8";
+        string rom = "C:\\Users\\GeoEn\\Desktop\\Coding\\CHIP-8-Emulator\\games\\Pong-1p.ch8";
 
         // For timing..
         Stopwatch stopWatch = Stopwatch.StartNew();
@@ -39,6 +40,7 @@ namespace Chip8_GUI.src
             KeyDown += SetKeyDown;
             KeyUp += SetKeyUp;
 
+            stepper_break = false;
             initMemoryDisplay();
         }
 
@@ -96,19 +98,29 @@ namespace Chip8_GUI.src
             { Keys.Z, 0xA },
             { Keys.X, 0x0 },
             { Keys.C, 0xB },
-            { Keys.V, 0xF },
+            { Keys.V, 0xF }
         };
 
         void SetKeyDown(object sender, KeyEventArgs e)
         {
             if (keyMapping.ContainsKey(e.KeyCode))
                 chip8.keyDown(keyMapping[e.KeyCode]);
+            else if (e.KeyCode == Keys.Space)
+            { 
+                stepper_break = true;
+                Console.WriteLine("Stepper break: True");
+            }
         }
 
         void SetKeyUp(object sender, KeyEventArgs e)
         {
             if (keyMapping.ContainsKey(e.KeyCode))
                 chip8.keyUp(keyMapping[e.KeyCode]);
+            else if (e.KeyCode == Keys.Space)
+            {
+                Console.WriteLine("Stepper break: False");
+                stepper_break = false;
+            }
         }
 
         void StartGameLoop()
@@ -120,9 +132,17 @@ namespace Chip8_GUI.src
         {
             while (true)
             {
+                while (stepperMode.Checked)
+                {
+                    // Waits for space key to be pressed to do another run loop.
+                    if (stepper_break)
+                        break;
+                }
+
                 var currentTime = stopWatch.Elapsed;
                 var elapsedTime = currentTime - lastTime;
 
+                // TODO: Make Slider for this elapsed Time value to determine delay for clock speed slider.
                 while (elapsedTime >= targetElapsedTime60Hz)
                 {
                     this.Invoke((Action)rom_tick);
@@ -130,13 +150,13 @@ namespace Chip8_GUI.src
                     lastTime += targetElapsedTime60Hz;
                 }
 
-                chip8.Process_OpCode();
+                load_next_OpCode();
                 displayMemory();
                 Thread.Sleep(targetElapsedTime);
             }
         }
 
-        //void load_next_OpCode() => chip8.Process_OpCode();
+        void load_next_OpCode() => chip8.Process_OpCode();
         
         void rom_tick()
         {

@@ -42,6 +42,7 @@ namespace Chip8_GUI.src
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.stepperMode = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.display_screen)).BeginInit();
             this.SuspendLayout();
             // 
@@ -74,6 +75,8 @@ namespace Chip8_GUI.src
             this.RamView.Name = "RamView";
             this.RamView.Size = new System.Drawing.Size(202, 314);
             this.RamView.TabIndex = 4;
+            this.RamView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SetKeyDown);
+            this.RamView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.SetKeyUp);
             // 
             // RegistersView
             // 
@@ -172,12 +175,25 @@ namespace Chip8_GUI.src
             this.label4.TabIndex = 13;
             this.label4.Text = "Stack";
             // 
+            // stepperMode
+            // 
+            this.stepperMode.AutoSize = true;
+            this.stepperMode.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stepperMode.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.stepperMode.Location = new System.Drawing.Point(112, 487);
+            this.stepperMode.Name = "stepperMode";
+            this.stepperMode.Size = new System.Drawing.Size(113, 20);
+            this.stepperMode.TabIndex = 14;
+            this.stepperMode.Text = "Stepper Mode";
+            this.stepperMode.UseVisualStyleBackColor = true;
+            // 
             // GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(957, 547);
+            this.Controls.Add(this.stepperMode);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -194,6 +210,8 @@ namespace Chip8_GUI.src
             this.Name = "GUI";
             this.Text = "Chip-8 Emulator";
             this.Load += new System.EventHandler(this.GUI_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SetKeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.SetKeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.display_screen)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -214,5 +232,6 @@ namespace Chip8_GUI.src
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.CheckBox stepperMode;
     }
 }

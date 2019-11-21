@@ -75,6 +75,19 @@ namespace Chip8_GUI.src
             // Loads the data from the rom into memory @ the program counter.
             Array.Copy(data, 0, _ram, 0x200, data.Length);
 
+        // Stack Functions:
+
+        private void push(ushort value) {
+            // TODO: Handle stack overflow?
+            _stack[_stackPointer++] = value;
+        }
+
+        private ushort pop()
+        {
+            return _stack[--_stackPointer];
+        }
+
+
         // Stores the current rom's font style in memory
         private void set_up_font()
         {
@@ -131,7 +144,6 @@ namespace Chip8_GUI.src
                 _delayTimer--;
                 // TODO: Add logic for sound timer (Maybe here? Not 100% sure where it goes yet.)
             }
-            // TODO: Add logic for drawing graphics here.
         }
         
         public void Process_OpCode()
@@ -270,7 +282,7 @@ namespace Chip8_GUI.src
             }
             // Returns subroutine from the stack
             else if(data.NN == 0xEE){
-                _programCounter = _stack[--_stackPointer];
+                _programCounter = pop();
             }
         }
 
@@ -283,10 +295,10 @@ namespace Chip8_GUI.src
         private void call_subroutine_NNN(OpCode data){
             // Push the current Program counter onto the stack
 
-            // TODO: Handle out of bounds exceptions here?
-            _stack[_stackPointer++] = _programCounter;
+            push(_programCounter);
             // Changes program counter to target the subroutine.
             _programCounter = data.NNN;
+            Console.WriteLine("Data Value: {0}", data.NNN);
         }
 
         private void skip_if_X_equals_NN(OpCode data){
