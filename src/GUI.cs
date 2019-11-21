@@ -239,8 +239,12 @@ namespace Chip8_GUI.src
             chip8.Tick();
 
             // Update Graphics here based on "Screen"
-            WriteToDisplay(screen.getDisplay()); // TODO: Validate that this screen is actually the same as the one passed into Chip8? (It is being modified)
-            display_screen.Refresh();
+            if (screen.needUpdate())
+            {
+                WriteToDisplay(screen.getDisplay());
+                display_screen.Refresh();
+            }
+            
         }
 
 

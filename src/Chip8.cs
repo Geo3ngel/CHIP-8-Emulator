@@ -85,7 +85,6 @@ namespace Chip8_GUI.src
         // Stack Functions:
 
         private void push(ushort value) {
-            // TODO: Handle stack overflow?
             _stack[_stackPointer++] = value;
         }
 
@@ -127,9 +126,6 @@ namespace Chip8_GUI.src
             _ram[address + 4] = (byte)((fontData & 0x00000000F0) >> (8 * 0));
         }
 
-        // TODO: Step through current process
-        // NOTE: Will need to be slowed down, if it runs at the normal processor speed, we will have issues.
-
         // Hanlde generic inputs to the chip 8 interpreter?
         public void keyDown(byte key)
         {
@@ -141,8 +137,6 @@ namespace Chip8_GUI.src
             _pressedKeys.Remove(key);
         }
 
-        // TODO: Move this out to main game loop?
-
         // Advances the timers
         public void Tick()
         {
@@ -150,6 +144,11 @@ namespace Chip8_GUI.src
             {
                 _delayTimer--;
                 // TODO: Add logic for sound timer (Maybe here? Not 100% sure where it goes yet.)
+            }
+
+            if (_soundTimer > 0)
+            {
+                _soundTimer--;
             }
         }
         
@@ -310,7 +309,6 @@ namespace Chip8_GUI.src
         }
 
         private void skip_if_X_equals_NN(OpCodeStruct data){
-            // TODO: Fix out of bounds error
             if(_registers[data.X] == data.NN)
             {
                 skip_instruction();
