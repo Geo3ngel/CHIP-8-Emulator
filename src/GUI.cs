@@ -15,14 +15,15 @@ namespace Chip8_GUI.src
         Chip8 chip8;
         Bitmap display;
         Screen screen;
-        private bool stepper_break;
+        private int stepper_break;
 
         // TODO: Add in pathing manager component here
         string rom = "C:\\Users\\GeoEn\\Desktop\\Coding\\CHIP-8-Emulator\\games\\Pong-1p.ch8";
 
         // For timing..
         Stopwatch stopWatch = Stopwatch.StartNew();
-        TimeSpan targetElapsedTime60Hz = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 60);
+        static long tps_mod = 1;
+        TimeSpan targetElapsedTime60Hz = TimeSpan.FromTicks((TimeSpan.TicksPerSecond * tps_mod) / 60);
         TimeSpan targetElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 1000);
         TimeSpan lastTime;
 
@@ -40,7 +41,7 @@ namespace Chip8_GUI.src
             KeyDown += SetKeyDown;
             KeyUp += SetKeyUp;
 
-            stepper_break = false;
+            stepper_break = 0;
             initMemoryDisplay();
         }
 
@@ -81,6 +82,10 @@ namespace Chip8_GUI.src
             Console.Beep(500, milliseconds);
         }
 
+        /*
+         Keypad/Input
+         */
+
         Dictionary<Keys, byte> keyMapping = new Dictionary<Keys, byte>
         {
             { Keys.D1, 0x1 },
@@ -104,24 +109,79 @@ namespace Chip8_GUI.src
         void SetKeyDown(object sender, KeyEventArgs e)
         {
             if (keyMapping.ContainsKey(e.KeyCode))
+            {
                 chip8.keyDown(keyMapping[e.KeyCode]);
-            else if (e.KeyCode == Keys.Space)
-            { 
-                stepper_break = true;
-                Console.WriteLine("Stepper break: True");
+                setKeypad(e, false);
             }
         }
 
         void SetKeyUp(object sender, KeyEventArgs e)
         {
             if (keyMapping.ContainsKey(e.KeyCode))
-                chip8.keyUp(keyMapping[e.KeyCode]);
-            else if (e.KeyCode == Keys.Space)
             {
-                Console.WriteLine("Stepper break: False");
-                stepper_break = false;
+                chip8.keyUp(keyMapping[e.KeyCode]);
+                setKeypad(e, true);
             }
         }
+
+        private void setKeypad(KeyEventArgs e, bool enable)
+        {
+            switch (keyMapping[e.KeyCode])
+            {
+                case 0x0:
+                    keypad0.Enabled = enable;
+                    break;
+                case 0x1:
+                    keypad1.Enabled = enable;
+                    break;
+                case 0x2:
+                    keypad2.Enabled = enable;
+                    break;
+                case 0x3:
+                    keypad3.Enabled = enable;
+                    break;
+                case 0x4:
+                    keypad4.Enabled = enable;
+                    break;
+                case 0x5:
+                    keypad5.Enabled = enable;
+                    break;
+                case 0x6:
+                    keypad6.Enabled = enable;
+                    break;
+                case 0x7:
+                    keypad7.Enabled = enable;
+                    break;
+                case 0x8:
+                    keypad8.Enabled = enable;
+                    break;
+                case 0x9:
+                    keypad9.Enabled = enable;
+                    break;
+                case 0xA:
+                    keypadA.Enabled = enable;
+                    break;
+                case 0xB:
+                    keypadB.Enabled = enable;
+                    break;
+                case 0xC:
+                    keypadC.Enabled = enable;
+                    break;
+                case 0xD:
+                    keypadD.Enabled = enable;
+                    break;
+                case 0xE:
+                    keypadE.Enabled = enable;
+                    break;
+                case 0xF:
+                    keypadF.Enabled = enable;
+                    break;
+            }
+        }
+
+        /*
+         Game Looping Logic
+         */
 
         void StartGameLoop()
         {
@@ -135,8 +195,12 @@ namespace Chip8_GUI.src
                 while (stepperMode.Checked)
                 {
                     // Waits for space key to be pressed to do another run loop.
-                    if (stepper_break)
+                    if (stepper_break > 0)
+                    {
+                        stepper_break--;
                         break;
+                    }
+                        
                 }
 
                 var currentTime = stopWatch.Elapsed;
@@ -208,7 +272,7 @@ namespace Chip8_GUI.src
 
             // Updates Ram Display
             Invoke(new Action(() => {
-                for(int i = 0; i < ram.Length; i++)
+                for (int i = 0; i < ram.Length; i++)
                 {
                     if (!Equals(RamView.Items[i], ram[i].ToString("x")))
                     {
@@ -268,9 +332,59 @@ namespace Chip8_GUI.src
                     }
                 }
             }));
+        }
+            /*
+             keypad response functions
+             */
 
-
+            /*
+             Stepper Button functions
+             */
+    
+        private void Step1_Click(object sender, EventArgs e)
+        {
+            stepper_break += 1;
         }
 
+        private void Step5_Click(object sender, EventArgs e)
+        {
+            stepper_break += 5;
+        }
+
+        private void Step10_Click(object sender, EventArgs e)
+        {
+            stepper_break += 10;
+        }
+
+        private void Step100_Click(object sender, EventArgs e)
+        {
+            stepper_break += 100;
+        }
+
+        private void StepperMode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (stepperMode.Checked)
+            {
+                // Enable the Stepper buttons
+                step1.Enabled = true;
+                step5.Enabled = true;
+                step10.Enabled = true;
+                step100.Enabled = true;
+            }
+            else
+            {
+                // Disable the Stepper buttons
+                step1.Enabled = false;
+                step5.Enabled = false;
+                step10.Enabled = false;
+                step100.Enabled = false;
+            }
+        }
+
+        private void SpeedBar_Scroll(object sender, EventArgs e)
+        {
+            tps_mod = speedBar.Value/10;
+            targetElapsedTime60Hz = TimeSpan.FromTicks((TimeSpan.TicksPerSecond * tps_mod) / 60);
+        }
     }
 }
