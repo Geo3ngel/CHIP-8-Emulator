@@ -16,8 +16,6 @@ namespace Chip8_GUI.src
 
             games_path = init_game_path();
             Console.WriteLine("Games dir: {0}", Path.GetFullPath(games_path));
-
-            get_games();
         }
 
         private string init_game_path()
@@ -26,16 +24,22 @@ namespace Chip8_GUI.src
             return Path.Combine(root_project_path, "games");
         }
 
-        private string[] get_games()
+        public string[] get_games()
         {
             string[] games = Directory.GetFiles(games_path);
+            string[] results = new string[games.Length];
 
-            foreach (string game_filename in games)
+            for(int i = 0; i < games.Length; i++)
             {
-                Console.WriteLine("Game: {0}", game_filename);
+                results[i] = Path.GetFileName(games[i]);
             }
 
-            return games;
+            return results;
+        }
+
+        public string get_game_path(string game)
+        {
+            return Path.Combine(games_path, game);
         }
 
     }
