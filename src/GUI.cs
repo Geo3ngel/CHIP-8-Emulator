@@ -290,5 +290,25 @@ namespace Chip8_GUI.src
         {
             stepper_break += 100;
         }
+
+        private void StepperMode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (stepperMode.Checked)
+            {
+                // Enable the Stepper buttons
+                step1.Enabled = true;
+                step5.Enabled = true;
+                step10.Enabled = true;
+                step100.Enabled = true;
+            }
+            else
+            {
+                // Disable the Stepper buttons
+                step1.Enabled = false;
+                step5.Enabled = false;
+                step10.Enabled = false;
+                step100.Enabled = false;
+            }
+        }
     }
 }

@@ -230,6 +230,7 @@ namespace Chip8_GUI.src
             this.stepperMode.TabIndex = 14;
             this.stepperMode.Text = "Stepper Mode";
             this.stepperMode.UseVisualStyleBackColor = true;
+            this.stepperMode.CheckedChanged += new System.EventHandler(this.StepperMode_CheckedChanged);
             // 
             // groupBox1
             // 
@@ -262,6 +263,7 @@ namespace Chip8_GUI.src
             // 
             // step100
             // 
+            this.step100.Enabled = false;
             this.step100.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.step100.Location = new System.Drawing.Point(12, 144);
             this.step100.Name = "step100";
@@ -273,6 +275,7 @@ namespace Chip8_GUI.src
             // 
             // step10
             // 
+            this.step10.Enabled = false;
             this.step10.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.step10.Location = new System.Drawing.Point(12, 111);
             this.step10.Name = "step10";
@@ -284,6 +287,7 @@ namespace Chip8_GUI.src
             // 
             // step5
             // 
+            this.step5.Enabled = false;
             this.step5.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.step5.Location = new System.Drawing.Point(12, 78);
             this.step5.Name = "step5";
@@ -295,6 +299,7 @@ namespace Chip8_GUI.src
             // 
             // step1
             // 
+            this.step1.Enabled = false;
             this.step1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.step1.Location = new System.Drawing.Point(12, 45);
             this.step1.Name = "step1";
