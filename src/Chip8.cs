@@ -65,7 +65,7 @@ namespace Chip8_GUI.src
                {0x7, add_X},
                {0x8, math_operation},
                {0x9, skip_if_X_not_equals_Y},
-               {0xA, set_adress_register},
+               {0xA, set_adress_counter},
                {0xB, jump_offset_by_NNN},
                {0xC, set_X_rand},
                {0xD, draw_sprite},
@@ -351,13 +351,13 @@ namespace Chip8_GUI.src
             switch (data.N)
             {
                 case 0x0:   //Assign: Set X to Y
-                    this._registers[data.X] = this._registers[data.Y];
+                    _registers[data.X] = _registers[data.Y];
                     break;
                 case 0x1:   // BitOp: Set X = X | Y (bitwise OR)
-                    this._registers[data.X] |= this._registers[data.Y];
+                    _registers[data.X] |= _registers[data.Y];
                     break;
                 case 0x2:   // BitOp: Sets X = X & Y (bitwise AND)
-                    this._registers[data.X] &= this._registers[data.Y];
+                    _registers[data.X] &= _registers[data.Y];
                     break;
                 case 0x3:   // BitOP: Sets X = X xor Y
                     _registers[data.X] ^= _registers[data.Y];
@@ -395,7 +395,7 @@ namespace Chip8_GUI.src
             }
         }
 
-        private void set_adress_register(OpCodeStruct data){
+        private void set_adress_counter(OpCodeStruct data){
             _addressCounter = data.NNN;
         }
 
@@ -411,8 +411,8 @@ namespace Chip8_GUI.src
 
         // Draws a specified sprite to the 'Screen' Object.
         private void draw_sprite(OpCodeStruct data){
-            var spriteX = _ram[data.X];
-            var spriteY = _ram[data.Y];
+            var spriteX = _registers[data.X];
+            var spriteY = _registers[data.Y];
 
             // Write any pending clears
             _screen.writePendingClears();
