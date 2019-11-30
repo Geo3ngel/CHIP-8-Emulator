@@ -31,7 +31,7 @@ namespace Chip8_GUI.src
         private void InitializeComponent()
         {
             this.romSelect = new System.Windows.Forms.ComboBox();
-            this.display_screen = new System.Windows.Forms.PictureBox();
+            this.display_screen = new InterpolatedPictureBox();
             this.RamView = new System.Windows.Forms.ListBox();
             this.RegistersView = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -96,6 +96,7 @@ namespace Chip8_GUI.src
             // 
             this.display_screen.AccessibleDescription = "The screen which displays the emulated roms.";
             this.display_screen.AccessibleName = "output_screen";
+            this.display_screen.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
             this.display_screen.Location = new System.Drawing.Point(182, 12);
             this.display_screen.Margin = new System.Windows.Forms.Padding(10);
             this.display_screen.MaximumSize = new System.Drawing.Size(6400, 3200);
@@ -672,7 +673,7 @@ namespace Chip8_GUI.src
         #endregion
 
         private System.Windows.Forms.ComboBox romSelect;
-        private System.Windows.Forms.PictureBox display_screen;
+        private InterpolatedPictureBox display_screen;
         private System.Windows.Forms.ListBox RamView;
         private System.Windows.Forms.ListBox RegistersView;
         private System.Windows.Forms.Label label1;
