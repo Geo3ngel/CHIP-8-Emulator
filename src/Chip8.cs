@@ -23,8 +23,6 @@ namespace Chip8_GUI.src
 
         // Timers
         private byte _delayTimer;
-        private byte _soundTimer;
-        private Action<int> _beep;
 
         // opCodes
         private Dictionary<byte, Action<OpCodeStruct>> _opCodes;
@@ -143,15 +141,8 @@ namespace Chip8_GUI.src
             if (_delayTimer > 0)
             {
                 _delayTimer--;
-                // TODO: Add logic for sound timer (Maybe here? Not 100% sure where it goes yet.)
             }
-
-            if (_soundTimer > 0)
-            {
-                // TODO: Signal sound to continue playing/start playing
-                _soundTimer--;
-                // TODO: Check if sound is 0 or less, then signal sound to cease
-            }
+            
         }
         
         public void Process_OpCode()
@@ -189,7 +180,7 @@ namespace Chip8_GUI.src
                     set_delay_timer(data);
                     break;
                 case 0x18:
-                    set_sound_timer(data);
+                    beep(data);
                     break;
                 case 0x1E:
                     add_x_to_address_register(data);
@@ -240,13 +231,12 @@ namespace Chip8_GUI.src
             _delayTimer = _registers[data.X];
         }
 
-        private void set_sound_timer(OpCodeStruct data)
+        // Makes a beeping sound for the specified amount of time.
+        private void beep(OpCodeStruct data)
         {
-            // TODO: Update this to reflect the proper beeping procedure.
-            // beep((int)(registers[data.X] * (1000f / 60)));   #Alternative way of playing it for X seconds?
-
-            // TODO: When this sound_timer is non-zero, play the sound effect in game loop.
-            _soundTimer = (byte) data.X;
+            int duration = (int)(_registers[data.X] * (1000f / 60));
+            Console.Beep(500, duration);
+            Console.WriteLine("Sound was set to: {0}", _registers[data.X]);
         }
 
         private void add_x_to_address_register(OpCodeStruct data) { _addressCounter += _registers[data.X]; }

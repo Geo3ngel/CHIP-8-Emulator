@@ -117,6 +117,7 @@ namespace Chip8_GUI.src
         void Beep(int milliseconds)
         {
             Console.Beep(500, milliseconds);
+            Console.Beep();
         }
 
         /*
@@ -232,8 +233,6 @@ namespace Chip8_GUI.src
         {
             // Cancelation token for cleaning up the Task when quiting a game.
             var capturedToken = cancel_token;
-            stopWatch.Restart();
-            var startTime = stopWatch.Elapsed;
 
             while (!cancel_token.IsCancellationRequested)
             {
