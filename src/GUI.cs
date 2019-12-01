@@ -18,12 +18,18 @@ namespace Chip8_GUI.src
         private int stepper_break;
         private PathManager pathManager;
 
-        // TODO: Add in pathing manager component here
-        string rom; // = "C:\\Users\\GeoEn\\Desktop\\Coding\\CHIP-8-Emulator\\games\\Pong-1p.ch8";
+        // For Background/Foreground colors
+        byte foreground_color_r;
+        byte foreground_color_g;
+        byte foreground_color_b;
+
+        byte background_color_r;
+        byte background_color_g;
+        byte background_color_b;
 
         // For timing..
         Stopwatch stopWatch = Stopwatch.StartNew();
-        static long tps_mod = 1;
+        static long tps_mod = (long)2.5;
         TimeSpan targetElapsedTime60Hz = TimeSpan.FromTicks((TimeSpan.TicksPerSecond * tps_mod) / 60);
         TimeSpan targetElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 1000);
         TimeSpan lastTime;
@@ -48,6 +54,18 @@ namespace Chip8_GUI.src
 
             stepper_break = 0;
             initMemoryDisplay();
+            init_colors();
+        }
+
+        private void init_colors()
+        {
+            foreground_color_r = 0x0;
+            foreground_color_g = 0x64;
+            foreground_color_b = 0x0;
+
+            background_color_r = 0x0;
+            background_color_g = 0x0;
+            background_color_b = 0x0;
         }
 
         // Loads the roms from the games directory into the romSelect ComboBox as options.
@@ -67,15 +85,16 @@ namespace Chip8_GUI.src
             {
                 byte* pointer = (byte*)bits.Scan0;
 
+
                 for (var y = 0; y < display.Height; y++)
                 {
                     for (var x = 0; x < display.Width; x++)
                     {
 
-                        // TODO: Add color wheel for configuring color scheme?
-                        pointer[0] = 0;                                     // Blue
-                        pointer[1] = pixels[x, y] ? (byte)0x64 : (byte)0;   // Green
-                        pointer[2] = 0;                                     // Red
+                        // TODO: Hook up to color wheel buttons
+                        pointer[0] = pixels[x, y] ? foreground_color_b : background_color_b;   // Blue
+                        pointer[1] = pixels[x, y] ? foreground_color_g : background_color_g;   // Green
+                        pointer[2] = pixels[x, y] ? foreground_color_r : background_color_r;   // Red
                         pointer[3] = 255;                                   // Alpha Channel
 
                         pointer += 4; // 4 bytes per pixel
@@ -408,6 +427,26 @@ namespace Chip8_GUI.src
 
             // Start the Emulator
             StartGameLoop();
+        }
+
+        private void Foreground_btn_Click(object sender, EventArgs e)
+        {
+            foreground_color_dialog.ShowDialog();
+            foreground_color_tb.BackColor = foreground_color_dialog.Color;
+
+            foreground_color_r = foreground_color_dialog.Color.R;
+            foreground_color_g = foreground_color_dialog.Color.G;
+            foreground_color_b = foreground_color_dialog.Color.B;
+        }
+
+        private void Background_btn_Click(object sender, EventArgs e)
+        {
+            background_color_dialog.ShowDialog();
+            background_color_tb.BackColor = background_color_dialog.Color;
+
+            background_color_r = background_color_dialog.Color.R;
+            background_color_g = background_color_dialog.Color.G;
+            background_color_b = background_color_dialog.Color.B;
         }
     }
 }
