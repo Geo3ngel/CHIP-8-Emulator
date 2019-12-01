@@ -15,6 +15,14 @@ namespace Chip8_GUI.src
             Console.WriteLine("ROOT: {0}", Path.GetFullPath(root_project_path));
 
             games_path = init_game_path();
+            // If a valid games path is not found, create one in the project's directory
+            if (!checked_if_path_is_valid(games_path))
+            {
+                root_project_path = "";
+                games_path = init_game_path();
+
+                Directory.CreateDirectory(games_path);
+            }
             Console.WriteLine("Games dir: {0}", Path.GetFullPath(games_path));
         }
 
@@ -42,5 +50,23 @@ namespace Chip8_GUI.src
             return Path.Combine(games_path, game);
         }
 
+        private bool checked_if_path_is_valid(string path)
+        {
+            bool valid = true;
+
+            try
+            {
+                string fullPath = Path.GetFullPath(path);
+
+                valid = Path.IsPathRooted(path);
+                
+            }
+            catch
+            {
+
+            }
+
+            return valid;
+        }
     }
 }
