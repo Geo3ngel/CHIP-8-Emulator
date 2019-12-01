@@ -34,13 +34,18 @@ namespace Chip8_GUI.src
         TimeSpan targetElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 1000);
         TimeSpan lastTime;
 
+        // Game loop instance
+        Task run_game;
+        CancellationTokenSource token_source;
+        CancellationToken cancel_token;
+
         public GUI()
         {
             InitializeComponent();
             display = new Bitmap(64, 32);
             display_screen.Image = display;
 
-            screen = new Screen(WriteToDisplay);
+            screen = new Screen();
             chip8 = new Chip8(screen);
 
             // Sets up pathing manager
@@ -55,6 +60,10 @@ namespace Chip8_GUI.src
             stepper_break = 0;
             initMemoryDisplay();
             init_colors();
+
+            // Sets up GUI compoent's intial states for loading ROMs.
+            start_rom.Enabled = false;
+            quit_rom.Enabled = false;
         }
 
         private void init_colors()
@@ -214,12 +223,17 @@ namespace Chip8_GUI.src
 
         void StartGameLoop()
         {
-            Task T = Task.Factory.StartNew(Run_Loop);
+            token_source = new CancellationTokenSource();
+            cancel_token = token_source.Token;
+            run_game = Task.Factory.StartNew(Run_Loop, cancel_token);
         }
 
         Task Run_Loop()
         {
-            while (true)
+            // Cancelation token for cleaning up the Task when quiting a game.
+            var capturedToken = cancel_token;
+
+            while (!cancel_token.IsCancellationRequested)
             {
                 while (stepperMode.Checked)
                 {
@@ -248,6 +262,8 @@ namespace Chip8_GUI.src
                 displayMemory();
                 Thread.Sleep(targetElapsedTime);
             }
+
+            return null;
         }
 
         void load_next_OpCode() => chip8.Process_OpCode();
@@ -260,8 +276,7 @@ namespace Chip8_GUI.src
             // Update Graphics here based on "Screen"
             if (screen.needUpdate())
             {
-                //WriteToDisplay(screen.getDisplay());
-                screen.display();
+                WriteToDisplay(screen.getDisplay());
                 display_screen.Refresh();
             }
             
@@ -422,16 +437,8 @@ namespace Chip8_GUI.src
         // Loads the Rom & starts the game
         private void RomSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // TODO: Test edge cases here!
-            string romPath = pathManager.get_game_path(romSelect.SelectedItem.ToString());
-            chip8.load_ROM(File.ReadAllBytes(romPath));
-
-            // Deselect Combo box
-            // TODO: Add better solution later? OR: Quit game button that re enables this!
-            romSelect.Enabled = false;
-
-            // Start the Emulator
-            StartGameLoop();
+            // Enable Start Button
+            start_rom.Enabled = true;
         }
 
         private void Foreground_btn_Click(object sender, EventArgs e)
@@ -452,6 +459,41 @@ namespace Chip8_GUI.src
             background_color_r = background_color_dialog.Color.R;
             background_color_g = background_color_dialog.Color.G;
             background_color_b = background_color_dialog.Color.B;
+        }
+
+        private void Start_rom_Click(object sender, EventArgs e)
+        {
+            string romPath = pathManager.get_game_path(romSelect.SelectedItem.ToString());
+            chip8.load_ROM(File.ReadAllBytes(romPath));
+
+            // Deselect Combo box
+            romSelect.Enabled = false;
+            start_rom.Enabled = false;
+            quit_rom.Enabled = true;
+
+            // Start the Emulator
+            StartGameLoop();
+        }
+
+        private void Quit_rom_Click(object sender, EventArgs e)
+        {
+            quit_rom.Enabled = false;
+            romSelect.Enabled = true;
+            start_rom.Enabled = true;
+
+            token_source.Cancel();
+
+            token_source.Dispose();
+
+            // Resets the Screen
+            screen = new Screen();
+            screen.clear();
+            chip8 = new Chip8(screen);
+
+            WriteToDisplay(screen.getDisplay());
+
+            System.GC.Collect();
+            // TODO: Clean up timers & reset Chip8 object
         }
     }
 }
