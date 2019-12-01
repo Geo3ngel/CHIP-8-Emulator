@@ -425,6 +425,10 @@ namespace Chip8_GUI.src
             string romPath = pathManager.get_game_path(romSelect.SelectedItem.ToString());
             chip8.load_ROM(File.ReadAllBytes(romPath));
 
+            // Deselect Combo box
+            // TODO: Add better solution later? OR: Quit game button that re enables this!
+            romSelect.Enabled = false;
+
             // Start the Emulator
             StartGameLoop();
         }
