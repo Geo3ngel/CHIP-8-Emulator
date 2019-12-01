@@ -84,6 +84,7 @@ namespace Chip8_GUI.src
             this.foreground_color_dialog = new System.Windows.Forms.ColorDialog();
             this.background_color_dialog = new System.Windows.Forms.ColorDialog();
             this.display_screen = new Chip8_GUI.src.InterpolatedPictureBox();
+            this.step1000 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.speedBar)).BeginInit();
             this.panel1.SuspendLayout();
@@ -237,6 +238,7 @@ namespace Chip8_GUI.src
             // 
             this.groupBox1.AutoSize = true;
             this.groupBox1.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.groupBox1.Controls.Add(this.step1000);
             this.groupBox1.Controls.Add(this.foreground_btn);
             this.groupBox1.Controls.Add(this.background_btn);
             this.groupBox1.Controls.Add(this.label12);
@@ -265,9 +267,9 @@ namespace Chip8_GUI.src
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.groupBox1.Location = new System.Drawing.Point(0, 378);
+            this.groupBox1.Location = new System.Drawing.Point(0, 374);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1040, 199);
+            this.groupBox1.Size = new System.Drawing.Size(1036, 218);
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Diagnosics";
@@ -375,7 +377,7 @@ namespace Chip8_GUI.src
             // 
             this.step100.Enabled = false;
             this.step100.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.step100.Location = new System.Drawing.Point(12, 144);
+            this.step100.Location = new System.Drawing.Point(12, 137);
             this.step100.Name = "step100";
             this.step100.Size = new System.Drawing.Size(113, 27);
             this.step100.TabIndex = 19;
@@ -387,7 +389,7 @@ namespace Chip8_GUI.src
             // 
             this.step10.Enabled = false;
             this.step10.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.step10.Location = new System.Drawing.Point(12, 111);
+            this.step10.Location = new System.Drawing.Point(12, 104);
             this.step10.Name = "step10";
             this.step10.Size = new System.Drawing.Size(113, 27);
             this.step10.TabIndex = 18;
@@ -399,7 +401,7 @@ namespace Chip8_GUI.src
             // 
             this.step5.Enabled = false;
             this.step5.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.step5.Location = new System.Drawing.Point(12, 78);
+            this.step5.Location = new System.Drawing.Point(12, 71);
             this.step5.Name = "step5";
             this.step5.Size = new System.Drawing.Size(113, 27);
             this.step5.TabIndex = 17;
@@ -411,7 +413,7 @@ namespace Chip8_GUI.src
             // 
             this.step1.Enabled = false;
             this.step1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.step1.Location = new System.Drawing.Point(12, 45);
+            this.step1.Location = new System.Drawing.Point(12, 38);
             this.step1.Name = "step1";
             this.step1.Size = new System.Drawing.Size(113, 27);
             this.step1.TabIndex = 16;
@@ -445,7 +447,7 @@ namespace Chip8_GUI.src
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1040, 378);
+            this.panel1.Size = new System.Drawing.Size(1036, 374);
             this.panel1.TabIndex = 17;
             // 
             // quit_rom
@@ -724,9 +726,9 @@ namespace Chip8_GUI.src
             this.panel2.BackColor = System.Drawing.SystemColors.AppWorkspace;
             this.panel2.Controls.Add(this.RamView);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel2.Location = new System.Drawing.Point(840, 0);
+            this.panel2.Location = new System.Drawing.Point(836, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(200, 378);
+            this.panel2.Size = new System.Drawing.Size(200, 374);
             this.panel2.TabIndex = 1;
             // 
             // display_screen
@@ -745,12 +747,24 @@ namespace Chip8_GUI.src
             this.display_screen.TabIndex = 0;
             this.display_screen.TabStop = false;
             // 
+            // step1000
+            // 
+            this.step1000.Enabled = false;
+            this.step1000.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.step1000.Location = new System.Drawing.Point(12, 170);
+            this.step1000.Name = "step1000";
+            this.step1000.Size = new System.Drawing.Size(113, 27);
+            this.step1000.TabIndex = 39;
+            this.step1000.Text = "Step 1000";
+            this.step1000.UseVisualStyleBackColor = true;
+            this.step1000.Click += new System.EventHandler(this.Step1000_Click);
+            // 
             // GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.ClientSize = new System.Drawing.Size(1040, 577);
+            this.ClientSize = new System.Drawing.Size(1036, 592);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -829,5 +843,6 @@ namespace Chip8_GUI.src
         private System.Windows.Forms.Button foreground_btn;
         private System.Windows.Forms.Button quit_rom;
         private System.Windows.Forms.Button start_rom;
+        private System.Windows.Forms.Button step1000;
     }
 }

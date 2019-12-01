@@ -408,6 +408,11 @@ namespace Chip8_GUI.src
             stepper_break += 100;
         }
 
+        private void Step1000_Click(object sender, EventArgs e)
+        {
+            stepper_break += 1000;
+        }
+
         private void StepperMode_CheckedChanged(object sender, EventArgs e)
         {
             if (stepperMode.Checked)
@@ -417,6 +422,7 @@ namespace Chip8_GUI.src
                 step5.Enabled = true;
                 step10.Enabled = true;
                 step100.Enabled = true;
+                step1000.Enabled = true;
             }
             else
             {
@@ -425,6 +431,7 @@ namespace Chip8_GUI.src
                 step5.Enabled = false;
                 step10.Enabled = false;
                 step100.Enabled = false;
+                step1000.Enabled = false;
             }
         }
 
