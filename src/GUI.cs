@@ -29,9 +29,9 @@ namespace Chip8_GUI.src
 
         // For timing..
         Stopwatch stopWatch = Stopwatch.StartNew();
-        static long tps_mod = (long)2.5;
-        TimeSpan targetElapsedTime60Hz = TimeSpan.FromTicks((TimeSpan.TicksPerSecond * tps_mod) / 60);
-        TimeSpan targetElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 1000);
+        static long tps_mod = (long)1;
+        TimeSpan targetElapsedTime60Hz = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 60);
+        TimeSpan targetElapsedTime = TimeSpan.FromTicks((TimeSpan.TicksPerSecond * tps_mod )/ 1000);
         TimeSpan lastTime;
 
         // Game loop instance
@@ -117,6 +117,7 @@ namespace Chip8_GUI.src
         void Beep(int milliseconds)
         {
             Console.Beep(500, milliseconds);
+            Console.Beep();
         }
 
         /*
@@ -237,7 +238,7 @@ namespace Chip8_GUI.src
             {
                 while (stepperMode.Checked)
                 {
-                    // Waits for space key to be pressed to do another run loop.
+                    // Waits for more steps
                     if (stepper_break > 0)
                     {
                         stepper_break--;
@@ -246,8 +247,7 @@ namespace Chip8_GUI.src
                         
                 }
 
-                var currentTime = stopWatch.Elapsed;
-                var elapsedTime = currentTime - lastTime;
+                var elapsedTime = stopWatch.Elapsed - lastTime;
 
                 while (elapsedTime >= targetElapsedTime60Hz)
                 {
@@ -430,8 +430,9 @@ namespace Chip8_GUI.src
 
         private void SpeedBar_Scroll(object sender, EventArgs e)
         {
-            tps_mod = speedBar.Value/10;
-            targetElapsedTime60Hz = TimeSpan.FromTicks((TimeSpan.TicksPerSecond * tps_mod) / 60);
+            tps_mod = speedBar.Value/1000;
+            // The amount of time that passes for each tick to occur
+            targetElapsedTime = TimeSpan.FromTicks((TimeSpan.TicksPerSecond * tps_mod) / 1000);
         }
 
         // Loads the Rom & starts the game
@@ -493,7 +494,7 @@ namespace Chip8_GUI.src
             WriteToDisplay(screen.getDisplay());
 
             System.GC.Collect();
-            // TODO: Clean up timers & reset Chip8 object
+            // TODO: Clean up timers?
         }
     }
 }
