@@ -40,7 +40,7 @@ namespace Chip8_GUI.src
             display = new Bitmap(64, 32);
             display_screen.Image = display;
 
-            screen = new Screen();
+            screen = new Screen(WriteToDisplay);
             chip8 = new Chip8(screen);
 
             // Sets up pathing manager
@@ -260,7 +260,8 @@ namespace Chip8_GUI.src
             // Update Graphics here based on "Screen"
             if (screen.needUpdate())
             {
-                WriteToDisplay(screen.getDisplay());
+                //WriteToDisplay(screen.getDisplay());
+                screen.display();
                 display_screen.Refresh();
             }
             
@@ -424,6 +425,10 @@ namespace Chip8_GUI.src
             // TODO: Test edge cases here!
             string romPath = pathManager.get_game_path(romSelect.SelectedItem.ToString());
             chip8.load_ROM(File.ReadAllBytes(romPath));
+
+            // Deselect Combo box
+            // TODO: Add better solution later? OR: Quit game button that re enables this!
+            romSelect.Enabled = false;
 
             // Start the Emulator
             StartGameLoop();

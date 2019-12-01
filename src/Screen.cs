@@ -14,12 +14,19 @@ namespace Chip8_GUI.src
         private bool[,] _toClearBuffer;
 
         private bool update;
+        private Action<bool[,]> draw;
 
-        public Screen()
+        public Screen(Action<bool[,]> draw)
         {
             _pixels = new bool[_screenWidth, _screenHeight];
             _toClearBuffer = new bool[_screenWidth, _screenHeight];
             update = true;
+            this.draw = draw;
+        }
+
+        public void display()
+        {
+            draw(_pixels);
         }
 
         public void updatePixel(int x_axis, int y_axis, bool pixel)
@@ -48,11 +55,13 @@ namespace Chip8_GUI.src
                 {
                     if (_toClearBuffer[x_axis, y_axis])
                     {
-                        update = true;
+                        if (_pixels[x_axis, y_axis])
+                        {
+                            update = true;
+                        }
+                        _toClearBuffer[x_axis, y_axis] = false;
+                        _pixels[x_axis, y_axis] = false;
                     }
-
-                    _toClearBuffer[x_axis, y_axis] = false;
-                    _pixels[x_axis, y_axis] = false;
                 }
             }
         }
