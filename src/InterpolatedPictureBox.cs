@@ -5,7 +5,7 @@ namespace Chip8_GUI.src
 {
     class InterpolatedPictureBox : PictureBox
     {
-        // Credit for this graphical fix to: http://stackoverflow.com/a/13484101/25124
+        // Credit for this graphics showing up fuzzy to sharper display fix to: http://stackoverflow.com/a/13484101/25124
         public InterpolationMode InterpolationMode { get; set; }
 
         protected override void OnPaint(PaintEventArgs paintEventArgs)

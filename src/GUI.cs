@@ -18,12 +18,9 @@ namespace Chip8_GUI.src
         private int stepper_break;
         private PathManager pathManager;
 
-        // TODO: Add in pathing manager component here
-        string rom; // = "C:\\Users\\GeoEn\\Desktop\\Coding\\CHIP-8-Emulator\\games\\Pong-1p.ch8";
-
         // For timing..
         Stopwatch stopWatch = Stopwatch.StartNew();
-        static long tps_mod = 1;
+        static long tps_mod = (long)2.5;
         TimeSpan targetElapsedTime60Hz = TimeSpan.FromTicks((TimeSpan.TicksPerSecond * tps_mod) / 60);
         TimeSpan targetElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 1000);
         TimeSpan lastTime;
@@ -408,6 +405,18 @@ namespace Chip8_GUI.src
 
             // Start the Emulator
             StartGameLoop();
+        }
+
+        private void Foreground_btn_Click(object sender, EventArgs e)
+        {
+            foreground_color_dialog.ShowDialog();
+            foreground_color_tb.BackColor = foreground_color_dialog.Color;
+        }
+
+        private void Background_btn_Click(object sender, EventArgs e)
+        {
+            background_color_dialog.ShowDialog();
+            background_color_tb.BackColor = background_color_dialog.Color;
         }
     }
 }

@@ -148,7 +148,9 @@ namespace Chip8_GUI.src
 
             if (_soundTimer > 0)
             {
+                // TODO: Signal sound to continue playing/start playing
                 _soundTimer--;
+                // TODO: Check if sound is 0 or less, then signal sound to cease
             }
         }
         

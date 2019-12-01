@@ -77,7 +77,7 @@ namespace Chip8_GUI.src
             update = true;
         }
 
-        public Boolean needUpdate()
+        public bool needUpdate()
         {
             return update;
         }
