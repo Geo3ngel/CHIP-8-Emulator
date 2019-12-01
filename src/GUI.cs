@@ -40,7 +40,7 @@ namespace Chip8_GUI.src
             display = new Bitmap(64, 32);
             display_screen.Image = display;
 
-            screen = new Screen();
+            screen = new Screen(WriteToDisplay);
             chip8 = new Chip8(screen);
 
             // Sets up pathing manager
@@ -260,7 +260,8 @@ namespace Chip8_GUI.src
             // Update Graphics here based on "Screen"
             if (screen.needUpdate())
             {
-                WriteToDisplay(screen.getDisplay());
+                //WriteToDisplay(screen.getDisplay());
+                screen.display();
                 display_screen.Refresh();
             }
             
