@@ -28,7 +28,6 @@ namespace Chip8_GUI.src
 
         private string init_game_path()
         {
-            // TODO: Verify this path is still valid, if not, create a "games" directory
             return Path.Combine(root_project_path, "games");
         }
 

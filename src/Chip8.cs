@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Chip8_GUI.src
 {
@@ -33,7 +34,7 @@ namespace Chip8_GUI.src
         private Screen _screen;
 
         // Constructor for the Chip class
-        public Chip8(Screen screen/*, Action<int> beep*/)
+        public Chip8(Screen screen)
         {
             // CHIP-8 Components
             _registers = new byte[16];
@@ -44,8 +45,6 @@ namespace Chip8_GUI.src
             _ram = new byte[0x1000];
 
             _screen = screen;
-            // Timers
-            //this._beep = beep;
 
             _pressedKeys = new HashSet<byte>();
             _random = new Random();
@@ -180,7 +179,7 @@ namespace Chip8_GUI.src
                     set_delay_timer(data);
                     break;
                 case 0x18:
-                    beep(data);
+                    Task.Factory.StartNew(() => beep(data));
                     break;
                 case 0x1E:
                     add_x_to_address_register(data);
