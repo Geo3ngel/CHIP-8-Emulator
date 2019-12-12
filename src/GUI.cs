@@ -318,7 +318,7 @@ namespace Chip8_GUI.src
                 {
                     if (!Equals(RamView.Items[i], ram[i].ToString("x")))
                     {
-                        RamView.Items[i] = ram[i].ToString("x");
+                        RamView.Items[i] = i + ": 0x" + ram[i].ToString("x");
                     }
                 }
             }));
@@ -329,7 +329,7 @@ namespace Chip8_GUI.src
                 {
                     if (!Equals(RegistersView.Items[i], registers[i].ToString("x")))
                     {
-                        RegistersView.Items[i] = registers[i].ToString("x");
+                        RegistersView.Items[i] = i + ": 0x" + registers[i].ToString("x");
                     }
                 }
             }));
@@ -359,7 +359,7 @@ namespace Chip8_GUI.src
                 {
                     if (!Equals(StackPointerView.Items[0], stack_pointer.ToString("x")))
                     {
-                        StackPointerView.Items[0] = stack_pointer.ToString("x");
+                        StackPointerView.Items[0] = i + ": 0x" + stack_pointer.ToString("x");
                     }
                 }
             }));
@@ -370,7 +370,7 @@ namespace Chip8_GUI.src
                 {
                     if (!Equals(StackView.Items[i], stack[i].ToString()))
                     {
-                        StackView.Items[i] = stack[i].ToString();
+                        StackView.Items[i] = i+": 0x"+stack[i].ToString();
                     }
                 }
             }));
