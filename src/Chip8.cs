@@ -218,12 +218,14 @@ namespace Chip8_GUI.src
         // Sets register to current value of the delay timer
         private void get_delay(OpCodeStruct data)
         {
+            displayOpCode(data, "Get Delay Timer: Register[" + data.X + "] = " + _delayTimer);
             _registers[data.X] = _delayTimer;
         }
 
         // Will be called repeatedly by the game loop until the desired key is pressed to progress the program counter.
         private void get_key(OpCodeStruct data)
         {
+            displayOpCode(data, "Stores pressed key in Register[" + data.X + "] if pressed, otherwise skips next instruction.");
             if (_pressedKeys.Count > 0)
             {
                 _registers[data.X] = _pressedKeys.First();
@@ -237,24 +239,33 @@ namespace Chip8_GUI.src
         private void set_delay_timer(OpCodeStruct data)
         {
             _delayTimer = _registers[data.X];
+            displayOpCode(data, "Delay Timer = Register[" + data.X + "] = " + _delayTimer);
         }
 
         // Makes a beeping sound for the specified amount of time.
         private void beep(OpCodeStruct data)
         {
             int duration = (int)(_registers[data.X] * (1000f / 60));
+            displayOpCode(data, "Play BEEP sound effect for: " + duration + "Seconds");
             Console.Beep(500, duration);
             Console.WriteLine("Sound was set to: {0}", _registers[data.X]);
         }
 
-        private void add_x_to_address_register(OpCodeStruct data) { _addressCounter += _registers[data.X]; }
+        private void add_x_to_address_register(OpCodeStruct data) {
+            displayOpCode(data, "Address Counter += Register["+data.X+"]");
+            _addressCounter += _registers[data.X];
+        }
 
         // Sets the address register to the current location of the 'font' sprite for the sepcified character.
-        private  void set_address_register_for_char(OpCodeStruct data) { _addressCounter = (ushort)(_registers[data.X] * 5); }
+        private  void set_address_register_for_char(OpCodeStruct data) {
+            displayOpCode(data, "Set Address Counter to location of font sprite: "+ _registers[data.X]);
+            _addressCounter = (ushort)(_registers[data.X] * 5);
+        }
 
         // Stores a binary decimal into ram
         private void set_BCD(OpCodeStruct data)
         {
+            displayOpCode(data, "Store Binary Decimal "+ _registers[data.X] + " into RAM @"+_addressCounter);
             _ram[_addressCounter] = (byte)((_registers[data.X]/100)%10);
             _ram[_addressCounter+1] = (byte)((_registers[data.X]/10)%10);
             _ram[_addressCounter+2] = (byte)((_registers[data.X])%10);
@@ -263,7 +274,8 @@ namespace Chip8_GUI.src
         // Saves all registers to the address register.
         private void reg_dump(OpCodeStruct data)
         {
-            for(var i=0; i<= data.X; i++)
+            displayOpCode(data, "Save Register values into RAM for Registers 0-" + data.X);
+            for (var i=0; i<= data.X; i++)
             {
                 _ram[_addressCounter + i] = _registers[i];
             }
@@ -272,7 +284,8 @@ namespace Chip8_GUI.src
         // Loads all registers from the address register.
         private void reg_load(OpCodeStruct data)
         {
-            for(var i = 0; i <= data.X; i++)
+            displayOpCode(data, "Load Register values from RAM for Registers 0-"+data.X);
+            for (var i = 0; i <= data.X; i++)
             {
                 _registers[i] = _ram[_addressCounter + i];
             }
@@ -338,11 +351,11 @@ namespace Chip8_GUI.src
 
         private void set_X(OpCodeStruct data){
             _registers[data.X] = data.NN;
-            displayOpCode(data, "Set Register " + data.X + " to: " + data.NN);
+            displayOpCode(data, "Set Register[" + data.X + "] = " + data.NN);
         }
 
         private void add_X(OpCodeStruct data){
-            displayOpCode(data, "Add " + data.NN + " to Register: " + data.X);
+            displayOpCode(data, "Register[" + data.X+"] += " + data.NN);
             try
             {
                 _registers[data.X] += data.NN;
@@ -358,34 +371,43 @@ namespace Chip8_GUI.src
             switch (data.N)
             {
                 case 0x0:   //Assign: Set X to Y
+                    displayOpCode(data, "Register[" + data.X + "] = Register[" + data.NN+"]");
                     _registers[data.X] = _registers[data.Y];
                     break;
                 case 0x1:   // BitOp: Set X = X | Y (bitwise OR)
+                    displayOpCode(data, "Register[" + data.X + "] = Bitwise OR of Register[" + data.NN + "] and Register["+ data.Y + "]");
                     _registers[data.X] |= _registers[data.Y];
                     break;
                 case 0x2:   // BitOp: Sets X = X & Y (bitwise AND)
+                    displayOpCode(data, "Register[" + data.X + "] = Bitwise AND of Register[" + data.NN + "] and Register[" + data.Y + "]");
                     _registers[data.X] &= _registers[data.Y];
                     break;
                 case 0x3:   // BitOP: Sets X = X xor Y
+                    displayOpCode(data, "Register[" + data.X + "] = Bitwise XOR of Register[" + data.NN + "] and Register[" + data.Y + "]");
                     _registers[data.X] ^= _registers[data.Y];
                     break;
                 case 0x4:   // Math: Sets X += Y
+                    displayOpCode(data, "Register[" + data.X + "] += " + data.Y);
                     _registers[0xF] = (byte)(_registers[data.X] + _registers[data.Y] > 0xFF ? 1 : 0);
                     _registers[data.X] += _registers[data.Y];
                     break;
                 case 0x5:   // Math: X -= Y
+                    displayOpCode(data, "Register[" + data.X + "] -= " + data.Y);
                     _registers[0xF] = (byte)(_registers[data.X] > _registers[data.Y] ? 1 : 0);
                     _registers[data.X] -= _registers[data.Y];
                     break;
                 case 0x6:   // BitOp: Stores the least significant bit of the value of register position X at position 0xF in ram, then shifts value of register @ position X to the right by 1. 
+                    displayOpCode(data, "Bit shift value of Register[" + data.X + "] to the Right & store lsb in Register[0xF]");
                     _registers[0xF] = (byte)((_registers[data.X] & 0x1) != 0 ? 1 : 0);
                     _registers[data.X] /= 2; // Bit shift right.
                     break;
                 case 0x7:   //Math: X = Y - X
+                    displayOpCode(data, "Register[" + data.X + "] = " + data.Y + " - " + data.X);
                     _registers[0xF] = (byte)(_registers[data.Y] > _registers[data.X] ? 1 : 0);
                     _registers[data.Y] -= _registers[data.X];
                     break;
                 case 0xE:   // BitOp: Stores the least significant bit of the value of register position X at position 0xF in ram, then shifts value of register @ position X to the left by 1. 
+                    displayOpCode(data, "Bit shift value of Register[" + data.X + "] to the Left & store lsb in Register[0xF]");
                     _registers[0xF] = (byte)((_registers[data.X] & 0xF) != 0 ? 1 : 0);
                     _registers[data.X] *= 2; // Bit shift left.
                     break;
@@ -396,6 +418,7 @@ namespace Chip8_GUI.src
         }
 
         private void skip_if_X_not_equals_Y(OpCodeStruct data){
+            displayOpCode(data, "Skip instruction if " + data.X + " is not: " + data.Y);
             if (_registers[data.X] != _registers[data.Y])
             {
                 skip_instruction();
@@ -403,24 +426,27 @@ namespace Chip8_GUI.src
         }
 
         private void set_adress_counter(OpCodeStruct data){
+            displayOpCode(data, "Address Counter = " + data.NNN);
             _addressCounter = data.NNN;
         }
 
         // Just to the value in the register offset by NNN value 
         private void jump_offset_by_NNN(OpCodeStruct data){
+            displayOpCode(data, "Jump to Register[" + data.NNN+"]");
             _programCounter = (ushort)(_registers[0] + data.NNN);
         }
 
         // &s a random integer between 0 and 256with NN
         private void set_X_rand(OpCodeStruct data){
             _registers[data.X] = (byte)(_random.Next(0, 256) & data.NN);
+            displayOpCode(data, "Set Register["+data.X+"] = randomInt(256) bitwise AND by" + data.NN);
         }
 
         // Draws a specified sprite to the 'Screen' Object.
         private void draw_sprite(OpCodeStruct data){
             var spriteX = _registers[data.X];
             var spriteY = _registers[data.Y];
-
+            displayOpCode(data, "Draw Sprite to Screen at X:" + data.X+", Y:"+data.Y);
             // Write any pending clears
             _screen.writePendingClears();
 
@@ -460,6 +486,7 @@ namespace Chip8_GUI.src
 
         // Skips the next instruction if a certain key is pressed.
         private void skip_on_key(OpCodeStruct data){
+            displayOpCode(data, "Skip Instruction if key specified @ Register["+data.X+"] is pressed.");
             if ((if_key_pressed(data) && _pressedKeys.Contains(_registers[data.X])) || (!if_key_pressed(data) && !_pressedKeys.Contains(_registers[data.X])))
             {
                 skip_instruction();
@@ -492,7 +519,7 @@ namespace Chip8_GUI.src
         }
 
         /*
-         Getters for Visualization
+         Getters for Visualization. TO BE REFACTORED.
          */
 
         public byte[] get_ram()
