@@ -46,7 +46,7 @@ namespace Chip8_GUI.src
             display_screen.Image = display;
 
             screen = new Screen();
-            chip8 = new Chip8(screen, displayOpCodeTranslation);
+            chip8 = new Chip8(screen, displayOpCodeTranslation, updateAddressCounter, updateStackCounter, updateProgramCounter, updateStack, updateRegisters, updateRam);
 
             // Sets up pathing manager
             pathManager = new PathManager();
@@ -251,8 +251,6 @@ namespace Chip8_GUI.src
 
                 this.Invoke((Action)load_next_OpCode); 
 
-                // Loads the memory components into GUI
-                displayMemory();
                 Thread.Sleep(targetElapsedTime);
             }
 
@@ -280,12 +278,12 @@ namespace Chip8_GUI.src
         private void initMemoryDisplay()
         {
             // Sets up the ram list box.
-            for(int i = 0; i < chip8.get_ram().Length; i++)
-                RamView.Items.Add("0x0");
+            for(int i = 0; i < chip8.get_ram_length(); i++)
+                RamView.Items.Add(i+": 0x0");
 
             // Sets up view for registers.
-            for (int i = 0; i < chip8.get_registers().Length; i++)
-                RegistersView.Items.Add("0x0");
+            for (int i = 0; i < chip8.get_registers_length(); i++)
+                RegistersView.Items.Add(i + ": 0x0");
 
             // Initialize program counter
             ProgramCounterView.Items.Add("0");
@@ -294,85 +292,60 @@ namespace Chip8_GUI.src
             AddressCounterView.Items.Add("0");
 
             // Initialize Stack
-            for (int i = 0; i < chip8.get_stack().Length; i++)
-                StackView.Items.Add("0x0");
+            for (int i = 0; i < chip8.get_stack_length(); i++)
+                StackView.Items.Add(i + ": 0x0");
 
             // Initialize Stack Pointer
             StackPointerView.Items.Add("0");
 
         }
 
-        // Writes memory from current Chip8 instance to a visualized display.
-        private void displayMemory()
+        // Updates the address counter display
+        public void updateAddressCounter(byte address_counter)
         {
-            byte[] ram = chip8.get_ram();
-            byte[] registers = chip8.get_registers();
-            ushort program_counter = chip8.get_pc();
-            ushort address_counter = chip8.get_address_counter();
-            byte stack_pointer = chip8.get_stack_pointer();
-            ushort[] stack = chip8.get_stack();
-
-            // Updates Ram Display
             Invoke(new Action(() => {
-                for (int i = 0; i < ram.Length; i++)
-                {
-                    if (!Equals(RamView.Items[i], ram[i].ToString("x")))
-                    {
-                        RamView.Items[i] =  ram[i].ToString("x");
-                    }
-                }
+                AddressCounterView.Items[0] = address_counter.ToString("x");
             }));
+        }
 
-            // Updates Register display
-            Invoke(new Action(() => {
-                for (int i = 0; i < registers.Length; i++)
-                {
-                    if (!Equals(RegistersView.Items[i], registers[i].ToString("x")))
-                    {
-                        RegistersView.Items[i] =  registers[i].ToString("x");
-                    }
-                }
-            }));
-
-
-            // Updates Program Counter Display
-            // ProgramCounterView
-            Invoke(new Action(() => {
-                if (!Equals(ProgramCounterView.Items[0], program_counter.ToString()))
-                {
-                    ProgramCounterView.Items[0] = program_counter.ToString();
-                }
-            }));
-
-            // Updates Address Counter Display
-            Invoke(new Action(() => {
-                if (!Equals(AddressCounterView.Items[0], address_counter.ToString()))
-                {
-                    AddressCounterView.Items[0] = address_counter.ToString();
-                }
-            }));
-
+        public void updateStackCounter(byte stack_pointer)
+        {
             // Update Stack Pointer Display
             // TODO: Just make it highlight the currently selected index of the stack?
             Invoke(new Action(() => {
-                for (int i = 0; i < registers.Length; i++)
-                {
-                    if (!Equals(StackPointerView.Items[0], stack_pointer.ToString("x")))
-                    {
-                        StackPointerView.Items[0] = stack_pointer.ToString("x");
-                    }
-                }
+                StackPointerView.Items[0] = stack_pointer.ToString("x");
             }));
+        }
 
+        public void updateProgramCounter(ushort program_counter)
+        {
+            // Updates Program Counter View Display
+            Invoke(new Action(() => {
+                ProgramCounterView.Items[0] = program_counter.ToString();
+            }));
+        }
+
+        public void updateStack(int index, ushort val)
+        {
             //Update Stack
             Invoke(new Action(() => {
-                for (int i = 0; i < stack.Length; i++)
-                {
-                    if (!Equals(StackView.Items[i], stack[i].ToString()))
-                    {
-                        StackView.Items[i] = stack[i].ToString();
-                    }
-                }
+                StackView.Items[index] = index + ": 0x" + val.ToString();
+            }));
+        }
+
+        public void updateRegisters(int index, byte val)
+        {
+            // Updates Register display
+            Invoke(new Action(() => {
+                RegistersView.Items[index] = index + ": 0x" + val.ToString("x");
+            }));
+        }
+
+        public void updateRam(int index, byte val)
+        {
+            // Updates Ram Display
+            Invoke(new Action(() => {
+                RamView.Items[index] = index + ": 0x" + val.ToString("x");
             }));
         }
 
@@ -498,7 +471,7 @@ namespace Chip8_GUI.src
             // Resets the Screen
             screen = new Screen();
             screen.clear();
-            chip8 = new Chip8(screen, displayOpCodeTranslation);
+            chip8 = new Chip8(screen, displayOpCodeTranslation, updateAddressCounter, updateStackCounter, updateProgramCounter, updateStack, updateRegisters, updateRam);
 
             WriteToDisplay(screen.getDisplay());
 

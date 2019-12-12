@@ -41,8 +41,18 @@ namespace Chip8_GUI.src
         // Display reference hooks
         Action<OpCodeStruct, string> displayOpCode;
 
+        Action<byte> updateAddressCounter;
+        Action<byte> updateStackCounter;
+        Action<ushort> updateProgramCounter;
+
+        Action<int, ushort> updateStack;
+        Action<int, byte> updateRegisters;
+        Action<int, byte> updateRam;
+
         // Constructor for the Chip class
-        public Chip8(Screen screen, Action<OpCodeStruct, string> showOpCode)
+        public Chip8(Screen screen, Action<OpCodeStruct, string> showOpCode, 
+            Action<byte> updateAddressCounter, Action<byte> updateStackCounter, Action<ushort> updateProgramCounter,
+            Action<int, ushort> updateStack, Action<int, byte> updateRegisters, Action<int, byte> updateRam)
         {
             // CHIP-8 Components
             _registers = new byte[16];
@@ -54,6 +64,12 @@ namespace Chip8_GUI.src
 
             _screen = screen;
             displayOpCode = showOpCode;
+            this.updateAddressCounter = updateAddressCounter;
+            this.updateStackCounter = updateStackCounter;
+            this.updateProgramCounter = updateProgramCounter;
+            this.updateStack = updateStack;
+            this.updateRegisters = updateRegisters;
+            this.updateRam = updateRam;
 
             _pressedKeys = new HashSet<byte>();
             _random = new Random();
@@ -79,14 +95,19 @@ namespace Chip8_GUI.src
                {0xF, run_misc_op}
             };
 
-            // Loads the Fonts from the rom into memory
-            set_up_font();
-
            Console.WriteLine("CHIP-8 Emulator Initialized");
         }
-        public void load_ROM(byte[] data) =>
+        public void load_ROM(byte[] data)
+        {
+
             // Loads the data from the rom into memory @ the program counter.
             Array.Copy(data, 0, _ram, 0x200, data.Length);
+            updateRamRange(0, 200);
+
+            // Loads the Fonts from the rom into memory
+            set_up_font();
+        }
+            
 
         // Stack Functions:
 
@@ -130,6 +151,8 @@ namespace Chip8_GUI.src
             _ram[address + 2] = (byte)((fontData & 0x0000F00000) >> (8 * 2));
             _ram[address + 3] = (byte)((fontData & 0x000000F000) >> (8 * 1));
             _ram[address + 4] = (byte)((fontData & 0x00000000F0) >> (8 * 0));
+            // Update the memory view
+            updateRamRange(address, address + 4);
         }
 
         // Hanlde generic inputs to the chip 8 interpreter?
@@ -518,17 +541,22 @@ namespace Chip8_GUI.src
         }
 
         /*
-         Getters for Visualization. TO BE REFACTORED.
+         Visualization Functions.
          */
 
-        public byte[] get_ram()
+        public int get_ram_length()
         {
-            return _ram;
+            return _ram.Length;
         }
 
-        public byte[] get_registers()
+        public int get_registers_length()
         {
-            return _registers;
+            return _registers.Length;
+        }
+
+        public int get_stack_length()
+        {
+            return _stack.Length;
         }
 
         public ushort get_pc()
@@ -546,9 +574,29 @@ namespace Chip8_GUI.src
             return _stackPointer;
         }
 
-        public ushort[] get_stack()
+        // Makes update calls to the GUI for range between x-y of the stack array.
+        public void updateStackRange(int x, int y)
         {
-            return _stack;
+            for(int i = x; i <= y; i++)
+            {
+                updateStack(i, _stack[i]);
+            }
+        }
+
+        public void updateRegistersRange(int x, int y)
+        {
+            for (int i = x; i <= y; i++)
+            {
+                updateRegisters(i, _registers[i]);
+            }
+        }
+
+        public void updateRamRange(int x, int y)
+        {
+            for (int i = x; i <= y; i++)
+            {
+                updateRam(i, _ram[i]);
+            }
         }
     }
 }

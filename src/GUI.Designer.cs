@@ -43,6 +43,7 @@ namespace Chip8_GUI.src
             this.label4 = new System.Windows.Forms.Label();
             this.stepperMode = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.displayTranslation = new System.Windows.Forms.CheckBox();
             this.label13 = new System.Windows.Forms.Label();
             this.TranslationOutput = new System.Windows.Forms.ListBox();
             this.step1000 = new System.Windows.Forms.Button();
@@ -84,11 +85,10 @@ namespace Chip8_GUI.src
             this.keypad2 = new System.Windows.Forms.Button();
             this.keypad1 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.foreground_color_dialog = new System.Windows.Forms.ColorDialog();
-            this.background_color_dialog = new System.Windows.Forms.ColorDialog();
             this.label14 = new System.Windows.Forms.Label();
             this.display_screen = new Chip8_GUI.src.InterpolatedPictureBox();
-            this.displayTranslation = new System.Windows.Forms.CheckBox();
+            this.foreground_color_dialog = new System.Windows.Forms.ColorDialog();
+            this.background_color_dialog = new System.Windows.Forms.ColorDialog();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.speedBar)).BeginInit();
             this.panel1.SuspendLayout();
@@ -163,7 +163,7 @@ namespace Chip8_GUI.src
             this.AddressCounterView.ForeColor = System.Drawing.Color.White;
             this.AddressCounterView.FormattingEnabled = true;
             this.AddressCounterView.ItemHeight = 16;
-            this.AddressCounterView.Location = new System.Drawing.Point(754, 151);
+            this.AddressCounterView.Location = new System.Drawing.Point(754, 153);
             this.AddressCounterView.Name = "AddressCounterView";
             this.AddressCounterView.Size = new System.Drawing.Size(155, 18);
             this.AddressCounterView.TabIndex = 8;
@@ -280,6 +280,16 @@ namespace Chip8_GUI.src
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Diagnosics";
+            // 
+            // displayTranslation
+            // 
+            this.displayTranslation.AutoSize = true;
+            this.displayTranslation.Location = new System.Drawing.Point(439, 10);
+            this.displayTranslation.Name = "displayTranslation";
+            this.displayTranslation.Size = new System.Drawing.Size(146, 20);
+            this.displayTranslation.TabIndex = 42;
+            this.displayTranslation.Text = "Show Translation";
+            this.displayTranslation.UseVisualStyleBackColor = true;
             // 
             // label13
             // 
@@ -800,16 +810,6 @@ namespace Chip8_GUI.src
             this.display_screen.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.display_screen.TabIndex = 0;
             this.display_screen.TabStop = false;
-            // 
-            // displayTranslation
-            // 
-            this.displayTranslation.AutoSize = true;
-            this.displayTranslation.Location = new System.Drawing.Point(439, 10);
-            this.displayTranslation.Name = "displayTranslation";
-            this.displayTranslation.Size = new System.Drawing.Size(146, 20);
-            this.displayTranslation.TabIndex = 42;
-            this.displayTranslation.Text = "Show Translation";
-            this.displayTranslation.UseVisualStyleBackColor = true;
             // 
             // GUI
             // 
