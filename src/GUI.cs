@@ -310,7 +310,6 @@ namespace Chip8_GUI.src
         }
 
         // Writes memory from current Chip8 instance to a visualized display.
-        // TODO: Change to be an ON SIGNALED EVENT???
         private void displayMemory()
         {
             byte[] ram = chip8.get_ram();
