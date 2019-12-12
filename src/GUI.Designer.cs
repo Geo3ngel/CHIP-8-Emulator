@@ -88,6 +88,7 @@ namespace Chip8_GUI.src
             this.background_color_dialog = new System.Windows.Forms.ColorDialog();
             this.label14 = new System.Windows.Forms.Label();
             this.display_screen = new Chip8_GUI.src.InterpolatedPictureBox();
+            this.displayTranslation = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.speedBar)).BeginInit();
             this.panel1.SuspendLayout();
@@ -241,6 +242,7 @@ namespace Chip8_GUI.src
             // 
             this.groupBox1.AutoSize = true;
             this.groupBox1.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.groupBox1.Controls.Add(this.displayTranslation);
             this.groupBox1.Controls.Add(this.label13);
             this.groupBox1.Controls.Add(this.TranslationOutput);
             this.groupBox1.Controls.Add(this.step1000);
@@ -799,6 +801,16 @@ namespace Chip8_GUI.src
             this.display_screen.TabIndex = 0;
             this.display_screen.TabStop = false;
             // 
+            // displayTranslation
+            // 
+            this.displayTranslation.AutoSize = true;
+            this.displayTranslation.Location = new System.Drawing.Point(439, 10);
+            this.displayTranslation.Name = "displayTranslation";
+            this.displayTranslation.Size = new System.Drawing.Size(146, 20);
+            this.displayTranslation.TabIndex = 42;
+            this.displayTranslation.Text = "Show Translation";
+            this.displayTranslation.UseVisualStyleBackColor = true;
+            // 
             // GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -888,5 +900,6 @@ namespace Chip8_GUI.src
         private System.Windows.Forms.ListBox TranslationOutput;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.CheckBox displayTranslation;
     }
 }

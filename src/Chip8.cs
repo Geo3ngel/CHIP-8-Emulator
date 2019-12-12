@@ -218,14 +218,14 @@ namespace Chip8_GUI.src
         // Sets register to current value of the delay timer
         private void get_delay(OpCodeStruct data)
         {
-            displayOpCode(data, "Get Delay Timer: Register[" + data.X + "] = " + _delayTimer);
+            //displayOpCode(data, "Get Delay Timer: Register[" + data.X + "] = " + _delayTimer);
             _registers[data.X] = _delayTimer;
         }
 
         // Will be called repeatedly by the game loop until the desired key is pressed to progress the program counter.
         private void get_key(OpCodeStruct data)
         {
-            displayOpCode(data, "Stores pressed key in Register[" + data.X + "] if pressed, otherwise skips next instruction.");
+            //displayOpCode(data, "Stores pressed key in Register[" + data.X + "] if pressed, otherwise skips next instruction.");
             if (_pressedKeys.Count > 0)
             {
                 _registers[data.X] = _pressedKeys.First();
@@ -239,33 +239,33 @@ namespace Chip8_GUI.src
         private void set_delay_timer(OpCodeStruct data)
         {
             _delayTimer = _registers[data.X];
-            displayOpCode(data, "Delay Timer = Register[" + data.X + "] = " + _delayTimer);
+            //displayOpCode(data, "Delay Timer = Register[" + data.X + "] = " + _delayTimer);
         }
 
         // Makes a beeping sound for the specified amount of time.
         private void beep(OpCodeStruct data)
         {
             int duration = (int)(_registers[data.X] * (1000f / 60));
-            displayOpCode(data, "Play BEEP sound effect for: " + duration + "Seconds");
+            //displayOpCode(data, "Play BEEP sound effect for: " + duration + "Seconds");
             Console.Beep(500, duration);
             Console.WriteLine("Sound was set to: {0}", _registers[data.X]);
         }
 
         private void add_x_to_address_register(OpCodeStruct data) {
-            displayOpCode(data, "Address Counter += Register["+data.X+"]");
+            //displayOpCode(data, "Address Counter += Register["+data.X+"]");
             _addressCounter += _registers[data.X];
         }
 
         // Sets the address register to the current location of the 'font' sprite for the sepcified character.
         private  void set_address_register_for_char(OpCodeStruct data) {
-            displayOpCode(data, "Set Address Counter to location of font sprite: "+ _registers[data.X]);
+            //displayOpCode(data, "Set Address Counter to location of font sprite: "+ _registers[data.X]);
             _addressCounter = (ushort)(_registers[data.X] * 5);
         }
 
         // Stores a binary decimal into ram
         private void set_BCD(OpCodeStruct data)
         {
-            displayOpCode(data, "Store Binary Decimal "+ _registers[data.X] + " into RAM @"+_addressCounter);
+            //displayOpCode(data, "Store Binary Decimal "+ _registers[data.X] + " into RAM @"+_addressCounter);
             _ram[_addressCounter] = (byte)((_registers[data.X]/100)%10);
             _ram[_addressCounter+1] = (byte)((_registers[data.X]/10)%10);
             _ram[_addressCounter+2] = (byte)((_registers[data.X])%10);
@@ -298,7 +298,6 @@ namespace Chip8_GUI.src
         private void clear_or_return(OpCodeStruct data){
             // Clears screen
             if (data.NN == 0xE0){
-                Console.WriteLine("OPCODE DISPLAYED: chip 8");
                 _screen.clear();
                 displayOpCode(data, "Clear Screen");
             }
