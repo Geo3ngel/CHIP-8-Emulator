@@ -301,10 +301,10 @@ namespace Chip8_GUI.src
         }
 
         // Updates the address counter display
-        public void updateAddressCounter(byte address_counter)
+        public void updateAddressCounter(ushort address_counter)
         {
             Invoke(new Action(() => {
-                AddressCounterView.Items[0] = address_counter.ToString("x");
+                AddressCounterView.Items[0] = address_counter.ToString();
             }));
         }
 
@@ -469,8 +469,11 @@ namespace Chip8_GUI.src
             token_source.Dispose();
 
             // Resets the Screen
-            screen = new Screen();
             screen.clear();
+            screen = new Screen();
+
+            TranslationOutput.Items.Clear();
+
             chip8 = new Chip8(screen, displayOpCodeTranslation, updateAddressCounter, updateStackCounter, updateProgramCounter, updateStack, updateRegisters, updateRam);
 
             WriteToDisplay(screen.getDisplay());
