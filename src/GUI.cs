@@ -46,7 +46,7 @@ namespace Chip8_GUI.src
             display_screen.Image = display;
 
             screen = new Screen();
-            chip8 = new Chip8(screen);
+            chip8 = new Chip8(screen, displayOpCodeTranslation);
 
             // Sets up pathing manager
             pathManager = new PathManager();
@@ -100,7 +100,6 @@ namespace Chip8_GUI.src
                     for (var x = 0; x < display.Width; x++)
                     {
 
-                        // TODO: Hook up to color wheel buttons
                         pointer[0] = pixels[x, y] ? foreground_color_b : background_color_b;   // Blue
                         pointer[1] = pixels[x, y] ? foreground_color_g : background_color_g;   // Green
                         pointer[2] = pixels[x, y] ? foreground_color_r : background_color_r;   // Red
@@ -112,12 +111,6 @@ namespace Chip8_GUI.src
             }
 
             display.UnlockBits(bits);
-        }
-
-        void Beep(int milliseconds)
-        {
-            Console.Beep(500, milliseconds);
-            Console.Beep();
         }
 
         /*
@@ -383,10 +376,17 @@ namespace Chip8_GUI.src
             }));
         }
 
+        // Outputs the current Opcode data, and the function it has been translated to.
+        public void displayOpCodeTranslation(OpCodeStruct data, string translation)
+        {
+            Invoke(new Action(() => { TranslationOutput.Items.Add(data.ToString() + " => " + translation); }));
+            Console.WriteLine("OPCODE DISPLAYED:");
+        }
+
             /*
              Stepper Button functions
              */
-    
+
         private void Step1_Click(object sender, EventArgs e)
         {
             stepper_break += 1;
@@ -495,7 +495,7 @@ namespace Chip8_GUI.src
             // Resets the Screen
             screen = new Screen();
             screen.clear();
-            chip8 = new Chip8(screen);
+            chip8 = new Chip8(screen, displayOpCodeTranslation);
 
             WriteToDisplay(screen.getDisplay());
 

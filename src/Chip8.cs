@@ -5,11 +5,16 @@ using System.Threading.Tasks;
 
 namespace Chip8_GUI.src
 {
-    struct OpCodeStruct
+    public struct OpCodeStruct
     {
         public ushort OpCode;
         public ushort NNN;
         public byte NN, X, Y, N;
+
+        public override string ToString()
+        {
+            return $"{OpCode:X4}";
+        }
     }
 
     public class Chip8
@@ -33,8 +38,11 @@ namespace Chip8_GUI.src
         const int _screenWidth = 64, _screenHeight = 32;
         private Screen _screen;
 
+        // Display reference hooks
+        Action<OpCodeStruct, string> displayOpCode;
+
         // Constructor for the Chip class
-        public Chip8(Screen screen)
+        public Chip8(Screen screen, Action<OpCodeStruct, string> showOpCode)
         {
             // CHIP-8 Components
             _registers = new byte[16];
@@ -45,6 +53,7 @@ namespace Chip8_GUI.src
             _ram = new byte[0x1000];
 
             _screen = screen;
+            displayOpCode = showOpCode;
 
             _pressedKeys = new HashSet<byte>();
             _random = new Random();
@@ -276,17 +285,21 @@ namespace Chip8_GUI.src
         private void clear_or_return(OpCodeStruct data){
             // Clears screen
             if (data.NN == 0xE0){
+                Console.WriteLine("OPCODE DISPLAYED: chip 8");
                 _screen.clear();
+                displayOpCode(data, "Clear Screen");
             }
             // Returns subroutine from the stack
             else if(data.NN == 0xEE){
                 _programCounter = pop();
+                displayOpCode(data, "Return subroutine: " + _programCounter);
             }
         }
 
         // Jumps to the localtion specified in the current OpCode's nnn byte.
         private void jump_to_NNN(OpCodeStruct data){
             _programCounter = data.NNN;
+            displayOpCode(data, "Jump to instruction at: " + _programCounter);
         }
 
         // Jumps to the subroutine
@@ -296,24 +309,27 @@ namespace Chip8_GUI.src
             push(_programCounter);
             // Changes program counter to target the subroutine.
             _programCounter = data.NNN;
-            Console.WriteLine("Data Value: {0}", data.NNN);
+            displayOpCode(data, "Jump to subroutine: " + _programCounter);
         }
 
         private void skip_if_X_equals_NN(OpCodeStruct data){
-            if(_registers[data.X] == data.NN)
+            displayOpCode(data, "Skip instruction if "+ data.X +" is: " + data.NN);
+            if (_registers[data.X] == data.NN)
             {
                 skip_instruction();
             }
         }
 
         private void skip_if_X_not_equal_NN(OpCodeStruct data){
-            if(_registers[data.X] != data.NN)
+            displayOpCode(data, "Skip instruction if " + data.X + " is not: " + data.NN);
+            if (_registers[data.X] != data.NN)
             {
                 skip_instruction();
             }
         }
 
         private void skip_if_X_equals_Y(OpCodeStruct data){
+            displayOpCode(data, "Skip instruction if " + data.X + " is: " + data.Y);
             if (_registers[data.X] == _registers[data.Y])
             {   
                 skip_instruction();
@@ -322,9 +338,11 @@ namespace Chip8_GUI.src
 
         private void set_X(OpCodeStruct data){
             _registers[data.X] = data.NN;
+            displayOpCode(data, "Set Register " + data.X + " to: " + data.NN);
         }
 
         private void add_X(OpCodeStruct data){
+            displayOpCode(data, "Add " + data.NN + " to Register: " + data.X);
             try
             {
                 _registers[data.X] += data.NN;
