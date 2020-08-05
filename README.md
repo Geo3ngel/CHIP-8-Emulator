@@ -11,4 +11,4 @@ To use this application run the Chip8-Emulator.exe
 See the Releases for an up to date binary for windows machines.
 
 # Contributing 
-As of right now, the purpose for this project is strictly for the CSCI 460 Fall 2019 Operating system course, so no outside contributions are necessary. 
+Feel free to add a branch & send pull requests
